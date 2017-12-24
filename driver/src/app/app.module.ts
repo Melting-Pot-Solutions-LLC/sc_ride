@@ -7,6 +7,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { HttpModule } from '@angular/http';
 import { Geolocation } from '@ionic-native/geolocation';
 import { IonicStorageModule } from '@ionic/storage';
+import { Facebook } from '@ionic-native/facebook';
 
 // Import the AF2 Module
 import { AngularFireModule } from 'angularfire2';
@@ -106,6 +107,7 @@ export const firebaseConfig = {
     TripService,
     AuthService,
     SettingService,
+    Facebook,
     /* import services */
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

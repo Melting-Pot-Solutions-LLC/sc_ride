@@ -6,12 +6,13 @@ import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase/app';
 import 'rxjs/add/operator/take'
 import { DEFAULT_AVATAR } from "./constants";
+import { Facebook } from '@ionic-native/facebook';
 
 @Injectable()
 export class AuthService {
   user: any;
 
-  constructor(public afAuth: AngularFireAuth, public db: AngularFireDatabase, public storage: Storage) {
+  constructor(public afAuth: AngularFireAuth, public db: AngularFireDatabase, public storage: Storage, private fb: Facebook) {
 
   }
 
@@ -33,16 +34,19 @@ export class AuthService {
   // login with facebook
   loginWithFacebook() {
     return Observable.create(observer => {
-      this.afAuth.auth.signInWithPopup(new firebase.auth.FacebookAuthProvider()).then(result => {
-
-        this.createUserIfNotExist(result.user);
-        observer.next();
-      }).catch((error: any) => {
-        if (error) {
-          observer.error(error);
-        }
-      });
-    });
+      this.fb.login(['email', 'public_profile']).then(res => {
+        const facebookCredential = firebase.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
+        firebase.auth().signInWithCredential(facebookCredential).then((result) => {
+          result.name = result.displayName;
+          this.createUserIfNotExist(result);
+          observer.next();
+        }, (error) => {
+          if (error) {
+            observer.error(error);
+          }          
+        })
+      })
+    })
   }
 
   // login with google
