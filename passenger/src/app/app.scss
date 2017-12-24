@@ -124,6 +124,17 @@
     margin-top: 0.75em;
     border-radius: 50%;
   }
+
+  h4 + button {
+    color: #fff !important;
+    border-color: #fff !important;
+    border-radius: 10px !important;
+    height: 1.8em !important;
+  }
+
+  h4 + button.activated {
+    opacity: 0.3 !important;
+  }
 }
 
 // auth page

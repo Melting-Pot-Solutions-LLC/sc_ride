@@ -125,8 +125,8 @@ export class TrackingPage {
     this.showDriverOnMap();
 
     this.driverTracking = setInterval(() => {
-      this.marker.setMap(null);
-      this.showDriverOnMap();
+      // this.marker.setMap(null);
+      // this.showDriverOnMap();
     }, POSITION_INTERVAL);
 
     console.log(POSITION_INTERVAL);

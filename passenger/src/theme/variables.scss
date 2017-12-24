@@ -22,20 +22,34 @@ $driverProfilePictureSize: 120px;
 // colors so you can add, rename and remove colors as needed.
 // The "primary" color is the only required color in the map.
 
+// $colors: (
+//   primary: #00B140,
+//   secondary: #898D97,
+//   danger: #D65451,
+//   light: #FFF,
+//   dark: #444,
+//   favorite: #69BB7B,
+//   gray: #484C56,
+//   white: #FFF,
+//   bg-color: #F7F9FB,
+//   border-color: #E9EBEB,
+//   yellow: #ffc900,
+//   fb-color: #3B5999,
+//   gg-color: #EEEFF2,
+// );
 $colors: (
-  primary: #00B140,
+  primary: #ed3237,
   secondary: #898D97,
-  danger: #D65451,
+  danger: #ed3237,
   light: #FFF,
-  dark: #444,
+  dark: #606062,
   favorite: #69BB7B,
   gray: #484C56,
   white: #FFF,
   bg-color: #F7F9FB,
   border-color: #E9EBEB,
   yellow: #ffc900,
-  fb-color: #3B5999,
-  gg-color: #EEEFF2,
+  fb-color: #3B5999
 );
 
 // App Theme

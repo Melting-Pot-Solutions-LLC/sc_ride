@@ -3,10 +3,9 @@
   <ion-content class="menu-left">
     <!-- User profile -->
     <div text-center padding-top padding-bottom class="primary-bg menu-left">
-      <a (click)="viewProfile()" menuClose>
-        <img class="profile-picture" src="{{ user.photoURL }}">
-        <h4 ion-text color="light">{{ user.displayName }}</h4>
-      </a>
+      <img class="profile-picture" src="{{ user.photoURL }}">
+      <h4 ion-text color="light">{{ user.displayName }}</h4>
+      <button (click)="viewProfile()" menuClose ion-button outline>edit</button>
     </div>
 
     <ion-list class="list-full-border">

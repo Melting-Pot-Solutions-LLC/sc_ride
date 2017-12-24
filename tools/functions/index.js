@@ -1,8 +1,8 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const stripe = require("stripe")(
-    "sk_test_xIqzyztu8EtmErAFLRtRdcAf" // update your secret key here
-);
+// const stripe = require("stripe")(
+//     "sk_test_xIqzyztu8EtmErAFLRtRdcAf" // update your secret key here
+// );
 
 const TRIP_STATUS_GOING = 'going';
 const TRIP_STATUS_FINISHED = 'finished';
@@ -101,17 +101,17 @@ exports.makeReport = functions.database.ref('/trips/{tripId}').onWrite(function 
       if (original.currency == '$') {
         const currency = 'usd';
         admin.database().ref('passengers/' + original.passengerId + '/card').once('value').then(function (snapshot) {
-          stripe.charges.create({
-            amount: fee,
-            currency: currency,
-            source: snapshot.val(),
-            description: "Charge for tripId: " + event.params.tripId
-          }, {
-            idempotency_key: event.params.tripId
-          }, function (err, charge) {
-            console.error(err);
-            console.log(charge);
-          });
+          // stripe.charges.create({
+          //   amount: fee,
+          //   currency: currency,
+          //   source: snapshot.val(),
+          //   description: "Charge for tripId: " + event.params.tripId
+          // }, {
+          //   idempotency_key: event.params.tripId
+          // }, function (err, charge) {
+          //   console.error(err);
+          //   console.log(charge);
+          // });
         });
       } else {
         console.log('Currency ' + original.currency + ' is not supported');

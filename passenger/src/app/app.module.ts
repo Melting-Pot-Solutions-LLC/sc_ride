@@ -48,12 +48,12 @@ import { CardSettingPage} from '../pages/card-setting/card-setting';
 
 // AF2 Settings
 export const firebaseConfig = {
-  apiKey: "AIzaSyBLp8awgJKxxFXdFv1lDHH5EDVDmMa3huI",
-  authDomain: "fir-taxi-30f13.firebaseapp.com",
-  databaseURL: "https://fir-taxi-30f13.firebaseio.com",
-  projectId: "fir-taxi-30f13",
-  storageBucket: "fir-taxi-30f13.appspot.com",
-  messagingSenderId: "754076567028"
+  apiKey: "AIzaSyDKo4A60BeWXnVTdfEku2kef4dTJ0nB13g",
+  authDomain: "sc-ride.firebaseapp.com",
+  databaseURL: "https://sc-ride.firebaseio.com",
+  projectId: "sc-ride",
+  storageBucket: "",
+  messagingSenderId: "825922165729"
 };
 
 @NgModule({

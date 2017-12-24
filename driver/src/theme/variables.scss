@@ -20,18 +20,31 @@ $background-color: #fff;
 // colors so you can add, rename and remove colors as needed.
 // The "primary" color is the only required color in the map.
 
+// $colors: (
+//   primary: #444,
+//   secondary: #00B140,
+//   danger: #f53d3d,
+//   light: #FFF,
+//   dark: #222,
+//   favorite: #69BB7B,
+//   gray: #898D97,
+//   yellow: #ffc900,
+//   listBorder: #DDD,
+//   fb-color: #3B5999,
+//   gg-color: #EEEFF2,
+// );
 $colors: (
-  primary: #444,
-  secondary: #00B140,
-  danger: #f53d3d,
+  primary: #606062,
+  secondary: #ed3237,
+  danger: #ed3237,
   light: #FFF,
-  dark: #222,
+  dark: #000000,
   favorite: #69BB7B,
   gray: #898D97,
   yellow: #ffc900,
   listBorder: #DDD,
   fb-color: #3B5999,
-  gg-color: #EEEFF2,
+  select-button: #00B140
 );
 
 // App Theme

@@ -9,7 +9,6 @@ import { SettingService } from "../../services/setting-service";
 import { DriverService } from "../../services/driver-service";
 import { TripService } from "../../services/trip-service";
 import { SHOW_VEHICLES_WITHIN, POSITION_INTERVAL, VEHICLE_LAST_ACTIVE_LIMIT } from "../../services/constants";
-import 'rxjs/Rx'
 declare var google: any;
 
 /*
@@ -315,7 +314,7 @@ export class HomePage {
     clearInterval(this.driverTracking);
 
     this.driverTracking = setInterval(() => {
-      this.showDriverOnMap(this.locality);
+      // this.showDriverOnMap(this.locality);
     }, POSITION_INTERVAL);
 
     console.log(POSITION_INTERVAL);
