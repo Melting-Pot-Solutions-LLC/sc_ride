@@ -14,7 +14,8 @@ By December, 26 (weeks 3, 4): finish front end development (all the screens will
 - place real google maps on all necessary screens
 - implement geolocation (no location tracking in the background  though)
 
-<b style="color: green">DONE</b> By January, 9 (weeks 5, 6): implement geolocation and google maps
+<p style="color: green;"><b>DONE:</b></p>
+By January, 9 (weeks 5, 6): implement geolocation and google maps
 - should be already implemented before
 
 
