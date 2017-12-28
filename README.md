@@ -34,8 +34,9 @@ By January, 23 (weeks 7, 8): implement immediate messaging and feedback system
 - feedback system should be done with the following angular plugin: 
 от ангуляра несколько плагинов который реализует систему ревью:
 https://www.npmjs.com/package/angular-star-rating
-https://github.com/akempes/angular-rateit
-если она уже есть в приложении, то ничего дополнительного делать не надо.
+https://github.com/akempes/angular-
+
+если такая система уже есть в приложении, то ничего дополнительного делать не надо.
 
 
 By February, 6 (weeks 9, 10): introduce push notifications, and payments
