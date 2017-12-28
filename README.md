@@ -1,12 +1,12 @@
 
-GENERAL OVERVIEW:
+# GENERAL OVERVIEW:
 The mobile application should serve like Uber for the city of Florence, SC. It should look and act similar to Uber but simplified and will have some additional features.
 
-TENTATIVE SCHEDULE
+<h1> TENTATIVE SCHEDULE </h1>
 By December, 12 (weeks 1, 2): design a logo, start the design work and front end development
 DONE, client loved the design, especially the logo design.
 
-
+# IN REVISIONS:
 By December, 26 (weeks 3, 4): finish front end development (all the screens will be ready but not functional), login/signup with the email address, login/signup with Facebook, users’ profiles
 - firebase login and sign up 
 - drivers and customers profiles: users (customers and drivers) will fill out forms with personal info: name, age, occupation, phone number etc.
@@ -14,14 +14,29 @@ By December, 26 (weeks 3, 4): finish front end development (all the screens will
 - place real google maps on all necessary screens
 - implement geolocation (no location tracking in the background  though)
 
-#DONE:
+# DONE:
 By January, 9 (weeks 5, 6): implement geolocation and google maps
 - should be already implemented before
 
-
+# UP NEXT:
 By January, 23 (weeks 7, 8): implement immediate messaging and feedback system
-- immediate messaging should be implemented via Firebase
+- immediate messaging should be implemented via Firebase:
+выглядеть может примерно вот так https://market.ionicframework.com/starters/ionic-chat-app Чат должен поддерживать текст и фото с телефона (видео не нужно)
+Как и в этом приложении, в наших обоих приложения, один из пунктов в sidemenu должен быть "Chats history", где будет показана история чатов, далее пассажир/водитель могут перейти в любой из чатов и продолжить общение.
+Когда вызываться? как начать переписку впервые? 4ый скрин слева (https://market.ionicframework.com/starters/firebase-taxi) там есть значок конвертика, при нажатии на него пассажир вызывает диалоговое окно с водителем
+
+В дальнейшем обе стороны должны получать push notifications о сообщениях.
+
+
+Если ты думаешь что будет дешевле купить этот кит и потом тебе взять оттуда код (чем тебе самому писать), то можно сделать и так.
+
+
 - feedback system should be done with the following angular plugin: 
+от ангуляра несколько плагинов который реализует систему ревью:
+https://www.npmjs.com/package/angular-star-rating
+https://github.com/akempes/angular-rateit
+если она уже есть в приложении, то ничего дополнительного делать не надо.
+
 
 By February, 6 (weeks 9, 10): introduce push notifications, and payments
 - find out as much as possible about push notifications. What is the easiest way to implement them?  Do I need a developer account to implement them? As of now, customers should be notified that they driver wants to take them for a ride, and drivers should only be notified only when ...
