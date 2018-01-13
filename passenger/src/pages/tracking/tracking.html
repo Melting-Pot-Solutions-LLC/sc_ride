@@ -37,7 +37,7 @@
           <a href="tel:{{ (driver)?.phoneNumber }}">
             <ion-icon name="call" color="secondary"></ion-icon>
           </a>
-          <a href="sms:{{ (driver)?.phoneNumber }}">
+          <a (click)="goToChat()">
             <ion-icon name="mail" color="secondary"></ion-icon>
           </a>
         </div>

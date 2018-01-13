@@ -1,0 +1,63 @@
+page-chat-history {
+
+	.scroll-content {
+
+		> p {
+			margin: 10px;
+		}
+
+		ion-list {
+			margin: 0px !important;
+
+			.item {
+				border: none !important;
+				padding: 0 16px 0 0;
+
+				ion-avatar {
+					margin: auto 16px !important;
+				}
+
+				.item-inner {
+					padding: 0px !important;
+
+					ion-label {
+						margin: 13px 0px;
+
+						ion-col:first-child {
+
+							h2, p {
+						    white-space: nowrap;
+						    overflow: hidden;
+						    text-overflow: ellipsis;
+							}
+
+							h2 {
+								font-weight: bold;
+							}
+						}
+
+						ion-col:last-child {
+
+							p {
+								text-align: right;
+						    white-space: nowrap;
+						    overflow: hidden;
+						    text-overflow: ellipsis;
+						    color: #ed3237;
+						    margin-bottom: 5px;
+							}
+
+							ion-badge {
+								position: absolute;
+								right: 0px;
+								bottom: 0px;
+								border-radius: 10px;
+								background-color: #ed3237;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

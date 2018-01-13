@@ -7,15 +7,15 @@ import { Geolocation } from '@ionic-native/geolocation';
 declare var google: any;
 
 // angularfire2
-import { AngularFireAuth } from "angularfire2/auth/auth";
+import { AngularFireAuth } from 'angularfire2/auth/auth';
 
 // constant
-import { POSITION_INTERVAL, TRIP_STATUS_WAITING, TRIP_STATUS_GOING } from "../services/constants";
+import { POSITION_INTERVAL, TRIP_STATUS_WAITING, TRIP_STATUS_GOING } from '../services/constants';
 
 // import service
-import { AuthService } from "../services/auth-service";
-import { PlaceService } from "../services/place-service";
-import { DriverService } from "../services/driver-service";
+import { AuthService } from '../services/auth-service';
+import { PlaceService } from '../services/place-service';
+import { DriverService } from '../services/driver-service';
 
 // import page
 import { HomePage } from '../pages/home/home';
@@ -24,10 +24,12 @@ import { JobHistoryPage } from '../pages/job-history/job-history';
 import { SettingPage } from '../pages/setting/setting';
 import { SupportPage } from '../pages/support/support';
 import { LoginPage } from '../pages/login/login';
-import { UserPage } from "../pages/user/user";
-import { TripService } from "../services/trip-service";
-import { PickUpPage } from "../pages/pick-up/pick-up";
-import { DropOffPage } from "../pages/drop-off/drop-off";
+import { UserPage } from '../pages/user/user';
+import { TripService } from '../services/trip-service';
+import { ChatService } from '../services/chat-service';
+import { PickUpPage } from '../pages/pick-up/pick-up';
+import { DropOffPage } from '../pages/drop-off/drop-off';
+import { ChatHistoryPage } from '../pages/chat-history/chat-history';
 
 @Component({
   templateUrl: 'app.html',
@@ -42,6 +44,7 @@ export class MyApp {
   positionTracking: any;
   driver: any;
   user: any = {};
+  getUnreadMessagesSubscription: any;
   pages = [
     {
       title: 'Home',
@@ -62,6 +65,12 @@ export class MyApp {
       component: JobHistoryPage
     },
     {
+      title: 'Chats history',
+      icon: 'ios-chatboxes-outline',
+      count: 0,
+      component: ChatHistoryPage
+    },
+    {
       title: 'Setting',
       icon: 'settings',
       count: 0,
@@ -75,9 +84,18 @@ export class MyApp {
     },
   ];
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, placeService: PlaceService,
-              geolocation: Geolocation, driverService: DriverService, afAuth: AngularFireAuth,
-              public authService: AuthService, tripService: TripService) {
+  constructor(
+    platform: Platform,
+    statusBar: StatusBar,
+    splashScreen: SplashScreen,
+    placeService: PlaceService,
+    geolocation: Geolocation,
+    driverService: DriverService,
+    afAuth: AngularFireAuth,
+    public authService: AuthService, 
+    tripService: TripService,
+    public chatService: ChatService
+  ) {
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -121,6 +139,10 @@ export class MyApp {
           driverService.getDriver().subscribe(snapshot => {
             this.driver = snapshot;
           });
+
+          this.getUnreadMessagesSubscription = this.chatService.getUnreadMessages().subscribe(snapshot => {
+            this.pages[3].count = snapshot;
+          })
         } else {
           this.driver = null;
         }
@@ -183,8 +205,9 @@ export class MyApp {
    * Logout this app
    */
   logout() {
-    this.authService.logout().then(() => {
-      this.nav.setRoot(LoginPage);
+    this.nav.setRoot(LoginPage).then(() => {
+      this.getUnreadMessagesSubscription.unsubscribe();
+      this.authService.logout();
     });
   }
 }

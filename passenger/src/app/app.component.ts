@@ -9,11 +9,13 @@ import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { NotificationPage } from '../pages/notification/notification';
 import { SupportPage } from '../pages/support/support';
-import { TripsPage } from "../pages/trips/trips";
-import { AngularFireAuth } from "angularfire2/auth/auth";
-import { AuthService } from "../services/auth-service";
-import { UserPage } from "../pages/user/user";
-import { CardSettingPage } from "../pages/card-setting/card-setting";
+import { TripsPage } from '../pages/trips/trips';
+import { AngularFireAuth } from 'angularfire2/auth/auth';
+import { AuthService } from '../services/auth-service';
+import { ChatService } from '../services/chat-service';
+import { UserPage } from '../pages/user/user';
+import { CardSettingPage } from '../pages/card-setting/card-setting';
+import { ChatHistoryPage } from '../pages/chat-history/chat-history';
 // end import pages
 
 @Component({
@@ -27,6 +29,7 @@ export class MyApp {
   rootPage: any;
   nav: any;
   user = {};
+  getUnreadMessagesSubscription: any;
   pages = [
     {
       title: 'Home',
@@ -39,6 +42,12 @@ export class MyApp {
       icon: 'ios-time-outline',
       count: 0,
       component: TripsPage
+    },
+    {
+      title: 'Chats history',
+      icon: 'ios-chatboxes-outline',
+      count: 0,
+      component: ChatHistoryPage
     },
     {
       title: 'Card setting',
@@ -60,8 +69,14 @@ export class MyApp {
     },
   ];
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public afAuth: AngularFireAuth,
-              public authService: AuthService) {
+  constructor(
+    platform: Platform,
+    statusBar: StatusBar,
+    splashScreen: SplashScreen,
+    public afAuth: AngularFireAuth,
+    public authService: AuthService,
+    public chatService: ChatService
+  ) {
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -82,9 +97,12 @@ export class MyApp {
       afAuth.authState.subscribe(authData => {
         if (authData) {
           this.user = authService.getUserData();
+          this.getUnreadMessagesSubscription = this.chatService.getUnreadMessages().subscribe(snapshot => {
+            this.pages[2].count = snapshot;
+          })
         }
-      });
-    });
+      })
+    })
   }
 
   openPage(page) {
@@ -102,8 +120,9 @@ export class MyApp {
 
   // logout
   logout() {
-    this.authService.logout().then(() => {
-      this.nav.setRoot(LoginPage);
+    this.nav.setRoot(LoginPage).then(() => {
+      this.getUnreadMessagesSubscription.unsubscribe();
+      this.authService.logout();
     });
   }
 }

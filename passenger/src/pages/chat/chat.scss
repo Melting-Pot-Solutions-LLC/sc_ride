@@ -1,0 +1,162 @@
+page-chat {
+
+	ion-content {
+
+		.scroll-content {
+			border: none !important;
+		}
+
+		ion-item:nth-child(1) {
+    	margin-top: 10px !important;
+		}
+
+		ion-item {
+			padding: 0px !important;
+			position: relative;
+
+			ion-avatar {
+				margin: 0px !important;
+				position: absolute;
+				top: 10px;
+			}
+
+			.item-inner {
+				padding: 0px !important;
+				margin: 10px 55px;
+				border: none !important;
+
+				.input-wrapper {
+					-webkit-align-items: start;
+					align-items: start;
+
+					ion-label {
+						margin: 0px;
+
+						p {
+							color: #fff;
+							border-radius: 5px;
+							padding: 0px;
+							margin: 0px;
+
+							p {
+								padding: 9px 7px;
+								width: 100%;
+								white-space: pre-line;
+								font-size: 1.3rem;
+							}
+
+							img {
+								height: 200px;
+								margin-bottom: -4px;
+							}
+
+							ion-icon {
+								padding: 9px 7px;
+								font-size: 1.3rem;
+							}
+						}
+
+						h3 {
+							color: #606062;
+							font-size: 1.1rem;
+							padding: 5px 7px 0px;
+						}
+					}
+				}
+			}
+		}
+
+		ion-item.message-left {
+
+			ion-avatar {
+				left: 10px;
+			}
+			
+			.item-inner {
+
+				p {
+					background-color: #000;
+					float: left;
+				}
+
+				h3 {
+					float: left;
+					clear: left;
+				}
+			}
+		}
+
+		ion-item.message-right {
+
+			ion-avatar {
+				right: 10px;
+			}
+			
+			.item-inner {
+
+				p {
+					background-color: #ed3237;
+					float: right;
+				}
+
+				h3 {
+					float: right;
+					clear: right;
+				}
+			}
+		}
+	}
+
+	ion-footer {
+
+		ion-toolbar {
+			min-height: 64px !important;
+			max-height: 64px;
+			padding: 0px !important;
+
+			.toolbar-content {
+				height: 64px;
+
+				ion-textarea {
+					height: 100%;
+					padding: 10px;
+
+					textarea {
+						margin: 0px;
+						padding: 0px;
+						height: 100%;
+						width: 100%;
+						border: none;
+						line-height: 3rem;
+					}
+				}
+			}
+
+			ion-buttons {
+				width: 100px;
+    		margin: 0px;
+
+    		button {
+    			min-width: .9em;
+    			margin: 0px !important;
+    			padding: 0px 10px !important;
+    			color: #ed3237 !important;
+    			font-size: 1.6rem !important;
+
+    			ion-icon {
+    				padding: 0px !important;
+    				min-width: initial !important;
+    			}
+    		}
+
+    		button + button {
+    			font-size: 2.2rem !important;
+    		}
+			}
+		}
+	}
+
+	ion-footer:before {
+		display: none;
+	}
+}

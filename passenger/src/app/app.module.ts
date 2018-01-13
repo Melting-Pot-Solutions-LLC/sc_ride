@@ -8,6 +8,8 @@ import { HttpModule } from '@angular/http';
 import { Geolocation } from '@ionic-native/geolocation';
 import { IonicStorageModule } from '@ionic/storage';
 import { Facebook } from '@ionic-native/facebook';
+import { Camera } from '@ionic-native/camera';
+import { Keyboard } from '@ionic-native/keyboard';
 
 // Import the AF2 Module
 import { AngularFireModule } from 'angularfire2';
@@ -22,9 +24,10 @@ import { DriverService } from '../services/driver-service';
 import { NotificationService } from '../services/notification-service';
 import { PlaceService } from '../services/place-service';
 import { TripService } from '../services/trip-service';
-import { SettingService } from "../services/setting-service";
-import { DealService } from "../services/deal-service";
-import { AuthService } from "../services/auth-service";
+import { SettingService } from '../services/setting-service';
+import { DealService } from '../services/deal-service';
+import { AuthService } from '../services/auth-service';
+import { ChatService } from '../services/chat-service';
 // end import services
 
 // import pages
@@ -40,11 +43,13 @@ import { ProfilePage } from '../pages/profile/profile';
 import { RegisterPage } from '../pages/register/register';
 import { SupportPage } from '../pages/support/support';
 import { TrackingPage } from '../pages/tracking/tracking';
-import { MapPage } from "../pages/map/map";
+import { MapPage } from '../pages/map/map';
 import { TripsPage } from '../pages/trips/trips';
 import { TripDetailPage } from '../pages/trip-detail/trip-detail';
 import { UserPage } from '../pages/user/user';
-import { CardSettingPage} from '../pages/card-setting/card-setting';
+import { CardSettingPage } from '../pages/card-setting/card-setting';
+import { ChatHistoryPage } from '../pages/chat-history/chat-history';
+import { ChatPage } from '../pages/chat/chat';
 // end import pages
 
 // AF2 Settings
@@ -53,7 +58,7 @@ export const firebaseConfig = {
   authDomain: "sc-ride.firebaseapp.com",
   databaseURL: "https://sc-ride.firebaseio.com",
   projectId: "sc-ride",
-  storageBucket: "",
+  storageBucket: "gs://sc-ride.appspot.com/",
   messagingSenderId: "825922165729"
 };
 
@@ -77,6 +82,8 @@ export const firebaseConfig = {
     TripDetailPage,
     UserPage,
     CardSettingPage,
+    ChatHistoryPage,
+    ChatPage
   ],
   imports: [
     BrowserModule,
@@ -108,6 +115,8 @@ export const firebaseConfig = {
     TripDetailPage,
     UserPage,
     CardSettingPage,
+    ChatHistoryPage,
+    ChatPage
   ],
   providers: [
     StatusBar,
@@ -120,7 +129,10 @@ export const firebaseConfig = {
     SettingService,
     DealService,
     AuthService,
+    ChatService,
     Facebook,
+    Camera,
+    Keyboard,
     /* import services */
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

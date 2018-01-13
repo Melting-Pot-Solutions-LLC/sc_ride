@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, Platform, ModalController } from 'ionic-angular';
 import { DriverService } from '../../services/driver-service';
 import { HomePage } from "../home/home";
+import { ChatPage } from "../chat/chat";
 import { TripService } from "../../services/trip-service";
 import { POSITION_INTERVAL, TRIP_STATUS_GOING, TRIP_STATUS_FINISHED } from "../../services/constants";
 import { PlaceService } from "../../services/place-service";
@@ -23,6 +24,8 @@ export class TrackingPage {
   mapHeight: number = 480;
   // user info
   driver: any;
+  // driver id for chat
+  driverId: any;
   // map
   map: any;
   // trip info
@@ -44,8 +47,9 @@ export class TrackingPage {
     let tripId = this.tripService.getId();
     this.tripService.getTrip(tripId).take(1).subscribe(snapshot => {
       this.trip = snapshot;
+      this.driverId = snapshot.driverId;
 
-      this.driverService.getDriver(snapshot.driverId).take(1).subscribe(snap => {
+      this.driverService.getDriver(this.driverId).take(1).subscribe(snap => {
         console.log(snap);
         this.driver = snap;
         this.watchTrip(tripId);
@@ -162,5 +166,11 @@ export class TrackingPage {
         },
       });
     });
+  }
+
+  goToChat() {
+    this.nav.push(ChatPage, {
+      driverId: this.driverId
+    })
   }
 }

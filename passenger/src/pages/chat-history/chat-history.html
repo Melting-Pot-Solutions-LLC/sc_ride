@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Chats history</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+	<ion-searchbar *ngIf="loadedChats && loadedChats.length" (ionInput)="getItems($event)"></ion-searchbar>
+	<ion-list *ngFor="let chat of chats" (click)="goToChat(chat.driverId)">
+	  <button ion-item detail-none>
+	    <ion-avatar item-start>
+	      <img src="{{ chat.photo }}">
+	    </ion-avatar>
+		  <ion-grid no-padding>
+		    <ion-row>
+		      <ion-col col-6>
+				    <h2>{{ chat.name }}</h2>
+				    <p>{{ chat.text }}</p>
+		      </ion-col>
+		      <ion-col col-6>
+				    <p am-time-ago="message.time" color="primary">{{ chat.date | amTimeAgo}}</p>
+				    <ion-badge *ngIf="chat.count">{{ chat.count }}</ion-badge>
+		      </ion-col>
+		    </ion-row>
+		  </ion-grid>
+	  </button>
+	</ion-list>
+	<p *ngIf="loadedChats && loadedChats.length && chats && !chats.length">Not found.</p>
+	<p *ngIf="loadedChats && !loadedChats.length">No data.</p>
+</ion-content>

@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Chat</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content #content>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+	
+  <ion-item *ngFor="let message of messages" [ngClass]="[message.fromPassenger ? 'message-right' : 'message-left']">
+    <ion-avatar item-start>
+      <img src="{{ message.fromPassenger ? message.photo : driver.photoURL }}">
+    </ion-avatar>
+    <p [innerHTML]="message.text"></p>
+    <h3 am-time-ago="message.time">{{ message.createdAt | amTimeAgo}}</h3>
+  </ion-item>
+
+  <ion-item *ngIf="isTyping" class="message-left">
+    <ion-avatar item-start>
+      <img src="{{ driver.photoURL }}">
+    </ion-avatar>
+    <p><ion-icon name="ios-more"></ion-icon></p>
+  </ion-item>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-textarea [(ngModel)]="messageText" (keyup)="keyDownText($event)" placeholder="Send a message..."></ion-textarea>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="sendImage()">
+        <ion-icon name="md-images"></ion-icon>
+      </button>
+      <button ion-button icon-only (click)="sendMessage()" [disabled]="!messageText">
+        <ion-icon name="ios-send"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

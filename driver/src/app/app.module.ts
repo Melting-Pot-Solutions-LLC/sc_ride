@@ -8,6 +8,8 @@ import { HttpModule } from '@angular/http';
 import { Geolocation } from '@ionic-native/geolocation';
 import { IonicStorageModule } from '@ionic/storage';
 import { Facebook } from '@ionic-native/facebook';
+import { Camera } from '@ionic-native/camera';
+import { Keyboard } from '@ionic-native/keyboard';
 
 // Import the AF2 Module
 import { AngularFireModule } from 'angularfire2';
@@ -21,11 +23,12 @@ import { MomentModule } from 'angular2-moment';
 import { DriverService } from '../services/driver-service';
 import { ReportService } from '../services/report-service';
 import { TransactionService } from '../services/transaction-service';
-import { PlaceService } from "../services/place-service";
-import { DealService } from "../services/deal-service";
-import { TripService } from "../services/trip-service";
-import { AuthService } from "../services/auth-service";
-import { SettingService } from "../services/setting-service";
+import { PlaceService } from '../services/place-service';
+import { DealService } from '../services/deal-service';
+import { TripService } from '../services/trip-service';
+import { AuthService } from '../services/auth-service';
+import { SettingService } from '../services/setting-service';
+import { ChatService } from '../services/chat-service';
 // end import services
 
 // import pages
@@ -40,7 +43,9 @@ import { RegisterPage } from '../pages/register/register';
 import { SettingPage } from '../pages/setting/setting';
 import { SupportPage } from '../pages/support/support';
 import { WalletPage } from '../pages/wallet/wallet';
-import { UserPage } from "../pages/user/user";
+import { UserPage } from '../pages/user/user';
+import { ChatHistoryPage } from '../pages/chat-history/chat-history';
+import { ChatPage } from '../pages/chat/chat';
 // end import pages
 
 // AF2 Settings
@@ -49,7 +54,7 @@ export const firebaseConfig = {
   authDomain: "sc-ride.firebaseapp.com",
   databaseURL: "https://sc-ride.firebaseio.com",
   projectId: "sc-ride",
-  storageBucket: "",
+  storageBucket: "gs://sc-ride.appspot.com/",
   messagingSenderId: "825922165729"
 };
 
@@ -67,7 +72,9 @@ export const firebaseConfig = {
     SettingPage,
     SupportPage,
     WalletPage,
-    UserPage
+    UserPage,
+    ChatHistoryPage,
+    ChatPage
   ],
   imports: [
     BrowserModule,
@@ -94,6 +101,8 @@ export const firebaseConfig = {
     SupportPage,
     WalletPage,
     UserPage,
+    ChatHistoryPage,
+    ChatPage
   ],
   providers: [
     StatusBar,
@@ -107,7 +116,10 @@ export const firebaseConfig = {
     TripService,
     AuthService,
     SettingService,
+    ChatService,
     Facebook,
+    Camera,
+    Keyboard,
     /* import services */
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

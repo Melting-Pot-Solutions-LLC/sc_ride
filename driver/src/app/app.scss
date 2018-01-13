@@ -10,6 +10,10 @@
 
 // global styles
 
+::-webkit-scrollbar {
+  display:none;
+}
+
 .primary-bg {
   background-color: color($colors, primary);
 }
@@ -93,6 +97,11 @@ ion-list.list-full-border {
   .item:first-child,
   .item:last-child {
     border-bottom: 1px solid color($colors, listBorder);
+  }
+
+  ion-badge {
+    background-color: #ed3237;
+    border-radius: 10px;
   }
 }
 

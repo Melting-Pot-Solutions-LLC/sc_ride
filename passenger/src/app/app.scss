@@ -6,6 +6,10 @@
 // By default each design mode includes these shared imports.
 // App Shared Sass variables belong in app.variables.scss.
 
+::-webkit-scrollbar {
+  display:none;
+}
+
 // position
 .pull-left {
   float: left;
@@ -109,6 +113,10 @@
     .item-inner {
       border: none;
     }
+  }
+
+  ion-badge {
+    border-radius: 10px;
   }
 }
 
