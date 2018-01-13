@@ -333,7 +333,9 @@ export class HomePage {
       snapshot.forEach(vehicle => {
         // only show vehicle which has last active < 30 secs & distance < 5km
         let distance = this.placeService.calcCrow(vehicle.lat, vehicle.lng, this.origin.location.lat, this.origin.location.lng);
-        if (distance < SHOW_VEHICLES_WITHIN) {
+        if (distance < SHOW_VEHICLES_WITHIN
+            && Date.now() - vehicle.last_active < VEHICLE_LAST_ACTIVE_LIMIT
+        ) {
           // create or update
           let latLng = new google.maps.LatLng(vehicle.lat, vehicle.lng);
           let angle = this.driverService.getIconWithAngle(vehicle);
