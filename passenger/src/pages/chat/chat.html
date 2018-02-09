@@ -11,10 +11,10 @@
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-	
+  
   <ion-item *ngFor="let message of messages" [ngClass]="[message.fromPassenger ? 'message-right' : 'message-left']">
     <ion-avatar item-start>
-      <img src="{{ message.fromPassenger ? message.photo : driver.photoURL }}">
+      <img src="{{ message.fromPassenger ? message.photo : driver?.photoURL }}">
     </ion-avatar>
     <p [innerHTML]="message.text"></p>
     <h3 am-time-ago="message.time">{{ message.createdAt | amTimeAgo}}</h3>
@@ -22,7 +22,7 @@
 
   <ion-item *ngIf="isTyping" class="message-left">
     <ion-avatar item-start>
-      <img src="{{ driver.photoURL }}">
+      <img src="{{ driver?.photoURL }}">
     </ion-avatar>
     <p><ion-icon name="ios-more"></ion-icon></p>
   </ion-item>

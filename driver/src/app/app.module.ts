@@ -10,6 +10,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { Facebook } from '@ionic-native/facebook';
 import { Camera } from '@ionic-native/camera';
 import { Keyboard } from '@ionic-native/keyboard';
+import { OneSignal } from '@ionic-native/onesignal';
 
 // Import the AF2 Module
 import { AngularFireModule } from 'angularfire2';
@@ -120,6 +121,7 @@ export const firebaseConfig = {
     Facebook,
     Camera,
     Keyboard,
+    OneSignal,
     /* import services */
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

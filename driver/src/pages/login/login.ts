@@ -43,7 +43,7 @@ export class LoginPage {
     });
     loading.present();
 
-    this.authService.login(this.email, this.password).then(authData => {
+    this.authService.login(this.email, this.password).subscribe(authData => {
       loading.dismiss();
       this.nav.setRoot(HomePage);
     }, error => {

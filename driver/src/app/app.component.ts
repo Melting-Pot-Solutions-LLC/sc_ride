@@ -4,6 +4,7 @@ import { ViewChild } from '@angular/core';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Geolocation } from '@ionic-native/geolocation';
+import { OneSignal } from '@ionic-native/onesignal';
 declare var google: any;
 
 // angularfire2
@@ -30,6 +31,7 @@ import { ChatService } from '../services/chat-service';
 import { PickUpPage } from '../pages/pick-up/pick-up';
 import { DropOffPage } from '../pages/drop-off/drop-off';
 import { ChatHistoryPage } from '../pages/chat-history/chat-history';
+import { ChatPage } from '../pages/chat/chat';
 
 @Component({
   templateUrl: 'app.html',
@@ -94,7 +96,8 @@ export class MyApp {
     afAuth: AngularFireAuth,
     public authService: AuthService, 
     tripService: TripService,
-    public chatService: ChatService
+    public chatService: ChatService,
+    private oneSignal: OneSignal
   ) {
 
     platform.ready().then(() => {
@@ -121,10 +124,12 @@ export class MyApp {
             });
 
             // if all trip are completed, go to home page
-            this.nav.setRoot(root);
+            if (!this.nav.getActive())
+              this.nav.setRoot(root);
           });
         } else {
-          this.nav.setRoot(LoginPage);
+          if (!this.nav.getActive())
+            this.nav.setRoot(LoginPage);
         }
       });
 
@@ -179,7 +184,32 @@ export class MyApp {
       }, err => {
         console.log(err);
       });
-    });
+
+      // push notifications
+      if (platform.is('cordova')) {
+        this.oneSignal.startInit('3483a9d4-bbd7-45de-99d7-7f2d1f40a8aa', '13914947140');
+        this.oneSignal.iOSSettings({
+          "kOSSettingsKeyAutoPrompt": true,
+          "kOSSettingsKeyInAppLaunchURL": false
+        });
+        this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.None);
+        this.oneSignal.handleNotificationOpened().subscribe((jsonData) => {
+          var notificationType = jsonData.notification.payload.additionalData &&
+              jsonData.notification.payload.additionalData.type;
+          var notificationParams = jsonData.notification.payload.additionalData &&
+              jsonData.notification.payload.additionalData.params;
+          if (notificationType && notificationParams)
+            if ((notificationType == 'chat') && notificationParams.passengerId)
+              afAuth.authState.take(1).subscribe(authData => {
+                if (authData)
+                  this.nav.setRoot(ChatPage, {
+                    passengerId: notificationParams.passengerId
+                  })
+              })
+        });
+        this.oneSignal.endInit();
+      }
+    })
   }
 
   /**

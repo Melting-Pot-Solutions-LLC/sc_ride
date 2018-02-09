@@ -94,7 +94,7 @@ export class ChatPage {
     this.keydownTimeout = setTimeout(() => {
       this.keydownTimeout = null;
       this.chatService.stopTypingMessage(this.passengerId);
-    }, 5000);
+    }, 2000);
   }
 
   sendMessage() {

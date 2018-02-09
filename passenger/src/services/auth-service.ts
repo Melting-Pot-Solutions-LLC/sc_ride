@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Platform } from 'ionic-angular';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Storage } from '@ionic/storage';
@@ -7,12 +8,20 @@ import * as firebase from 'firebase/app';
 import 'rxjs/add/operator/take'
 import { DEFAULT_AVATAR } from "./constants";
 import { Facebook } from '@ionic-native/facebook';
+import { OneSignal } from '@ionic-native/onesignal';
 
 @Injectable()
 export class AuthService {
   user: any;
 
-  constructor(public afAuth: AngularFireAuth, public db: AngularFireDatabase, public storage: Storage, private fb: Facebook) {
+  constructor(
+    public platform: Platform,
+    public afAuth: AngularFireAuth,
+    public db: AngularFireDatabase,
+    public storage: Storage,
+    private fb: Facebook,
+    private oneSignal: OneSignal
+  ) {
 
   }
 
@@ -28,7 +37,17 @@ export class AuthService {
 
   // login by email and password
   login(email, password) {
-    return this.afAuth.auth.signInWithEmailAndPassword(email, password);
+    return Observable.create(observer => {
+      this.afAuth.auth.signInWithEmailAndPassword(email, password).then((result) => {
+        result.name = result.displayName;
+        this.createUserIfNotExist(result);
+        observer.next();
+      }, (error) => {
+        if (error) {
+          observer.error(error);
+        }          
+      })
+    })
   }
 
   // login with facebook
@@ -65,6 +84,8 @@ export class AuthService {
   }
 
   logout() {
+    const user = this.getUserData();
+    this.db.object('passengers/' + user.uid + '/pushId').remove();
     return this.afAuth.auth.signOut();
   }
 
@@ -96,11 +117,16 @@ export class AuthService {
     });
 
     // create or update passenger
-    this.db.object('passengers/' + user.uid).update({
-      name: name,
-      photoURL: photoUrl,
-      email: user.email,
-      phoneNumber: user.phoneNumber ? user.phoneNumber : ''
+    this.oneSignal.getIds().then((ids) => {
+      this.db.object('passengers/' + user.uid).update({
+        name: name,
+        photoURL: photoUrl,
+        email: user.email,
+        phoneNumber: user.phoneNumber ? user.phoneNumber : '',
+        pushId: ids.userId
+      })
+    }, (err) => {
+      console.log(err);
     })
   }
 
@@ -112,13 +138,25 @@ export class AuthService {
         // update passenger object
         this.updateUserProfile(user);
       }
-    });
+      else {
+        if (this.platform.is('cordova')) {
+          // update push id
+          this.oneSignal.getIds().then((ids) => {
+            this.db.object('passengers/' + user.uid).update({
+              pushId: ids.userId
+            })
+          }, (err) => {
+            console.log(err);
+          })
+        }
+      }
+    })
   }
 
   // update card setting
   updateCardSetting(number, exp, cvv, token) {
     const user = this.getUserData();
-    this.db.object('passengers/' + user.uid + '/card').update({
+    this.db.object('passengers/' + user.uid + '/card').set({
       number: number,
       exp: exp,
       cvv: cvv,
