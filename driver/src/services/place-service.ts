@@ -14,7 +14,7 @@ export class PlaceService {
 
   //This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
   calcCrow(lat1, lon1, lat2, lon2) {
-    let R = 6371; // km
+    let R = 3959; // mi
     let dLat = this.toRad(lat2 - lat1);
     let dLon = this.toRad(lon2 - lon1);
     lat1 = this.toRad(lat1);

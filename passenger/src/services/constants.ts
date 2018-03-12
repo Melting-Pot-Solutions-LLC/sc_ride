@@ -1,4 +1,4 @@
-export let SHOW_VEHICLES_WITHIN = 5; // within 5km
+export let SHOW_VEHICLES_WITHIN = 5; // within 5miles
 export let POSITION_INTERVAL = 10000; // 2000ms
 export let VEHICLE_LAST_ACTIVE_LIMIT = 30000; // 30s
 

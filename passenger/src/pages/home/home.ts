@@ -180,7 +180,7 @@ export class HomePage {
                 this.distance = result.routes[0].legs[0].distance.value;
 
                 for (let i = 0; i < this.vehicles.length; i++) {
-                  this.vehicles[i].fee = this.distance * this.vehicles[i].price / 1000;
+                  this.vehicles[i].fee = this.distance * 0.62137 * this.vehicles[i].price / 1000;
                   this.vehicles[i].fee = this.vehicles[i].fee.toFixed(2);
                 }
               });
@@ -332,7 +332,7 @@ export class HomePage {
 
       // only show near vehicle
       snapshot.forEach(vehicle => {
-        // only show vehicle which has last active < 30 secs & distance < 5km
+        // only show vehicle which has last active < 30 secs & distance < 5miles
         let distance = this.placeService.calcCrow(vehicle.lat, vehicle.lng, this.origin.location.lat, this.origin.location.lng);
         if (distance < SHOW_VEHICLES_WITHIN
             && Date.now() - vehicle.last_active < VEHICLE_LAST_ACTIVE_LIMIT
