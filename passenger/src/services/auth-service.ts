@@ -40,8 +40,11 @@ export class AuthService {
     return Observable.create(observer => {
       this.afAuth.auth.signInWithEmailAndPassword(email, password).then((result) => {
         result.name = result.displayName;
-        this.createUserIfNotExist(result);
-        observer.next();
+        this.createUserIfNotExist(result).then(() => {
+          observer.next();
+        }, (error) => {
+          observer.error(error);
+        })
       }, (error) => {
         if (error) {
           observer.error(error);
@@ -57,8 +60,11 @@ export class AuthService {
         const facebookCredential = firebase.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
         firebase.auth().signInWithCredential(facebookCredential).then((result) => {
           result.name = result.displayName;
-          this.createUserIfNotExist(result);
-          observer.next();
+          this.createUserIfNotExist(result).then(() => {
+            observer.next();
+          }, (error) => {
+            observer.error(error);
+          })
         }, (error) => {
           if (error) {
             observer.error(error);
@@ -72,9 +78,11 @@ export class AuthService {
   loginWithGoogle() {
     return Observable.create(observer => {
       return this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(result => {
-
-        this.createUserIfNotExist(result.user);
-        observer.next();
+        this.createUserIfNotExist(result.user).then(() => {
+          observer.next();
+        }, (error) => {
+          observer.error(error);
+        })
       }).catch((error: any) => {
         if (error) {
           observer.error(error);
@@ -96,8 +104,11 @@ export class AuthService {
         authData.name = name;
 
         // update passenger object
-        this.updateUserProfile(authData);
-        observer.next();
+        this.updateUserProfile(authData).then(() => {
+          observer.next();
+        }, (error) => {
+          observer.error(error);
+        });
       }).catch((error: any) => {
         if (error) {
           observer.error(error);
@@ -108,48 +119,77 @@ export class AuthService {
 
   // update user display name and photo
   updateUserProfile(user) {
-    let name = user.name ? user.name : user.email;
-    let photoUrl = user.photoURL ? user.photoURL : DEFAULT_AVATAR;
+    return new Promise((resolve, reject) => {
+      let name = user.name ? user.name : user.email;
+      let photoUrl = user.photoURL ? user.photoURL : DEFAULT_AVATAR;
 
-    this.getUserData().updateProfile({
-      displayName: name,
-      photoURL: photoUrl
-    });
-
-    // create or update passenger
-    this.oneSignal.getIds().then((ids) => {
-      this.db.object('passengers/' + user.uid).update({
-        name: name,
-        photoURL: photoUrl,
-        email: user.email,
-        phoneNumber: user.phoneNumber ? user.phoneNumber : '',
-        pushId: ids.userId
+      this.getUserData().updateProfile({
+        displayName: name,
+        photoURL: photoUrl
+      }).then(() => {
+        if (this.platform.is('cordova'))
+          this.oneSignal.getIds().then((ids) => {
+            this.db.object('passengers/' + user.uid).update({
+              name: name,
+              photoURL: photoUrl,
+              email: user.email,
+              phoneNumber: user.phoneNumber ? user.phoneNumber : '',
+              pushId: ids.userId
+            }).then(() => {
+              resolve();
+            }, (error) => {
+              reject(error);
+            })
+          }, (error) => {
+            reject(error);
+          })
+        else
+          this.db.object('passengers/' + user.uid).update({
+            name: name,
+            photoURL: photoUrl,
+            email: user.email,
+            phoneNumber: user.phoneNumber ? user.phoneNumber : ''
+          }).then(() => {
+            resolve();
+          }, (error) => {
+            reject(error);
+          })
+      }, (error) => {
+        reject(error);
       })
-    }, (err) => {
-      console.log(err);
     })
   }
 
   // create new user if not exist
   createUserIfNotExist(user) {
-    // check if user does not exist
-    this.getUser(user.uid).take(1).subscribe(snapshot => {
-      if (snapshot.$value === null) {
-        // update passenger object
-        this.updateUserProfile(user);
-      }
-      else {
-        if (this.platform.is('cordova')) {
-          // update push id
-          this.oneSignal.getIds().then((ids) => {
-            this.db.object('passengers/' + user.uid).update({
-              pushId: ids.userId
-            })
-          }, (err) => {
-            console.log(err);
+    return new Promise((resolve, reject) => {
+      // check if user does not exist
+      this.getUser(user.uid).take(1).subscribe(snapshot => {
+        if (snapshot.$value === null)
+          // update passenger object
+          this.updateUserProfile(user).then(() => {
+            resolve();
+          }, (error) => {
+            reject(error);
           })
+        else {
+          if (this.platform.is('cordova')) {
+            // update push id
+            this.oneSignal.getIds().then((ids) => {
+              this.db.object('passengers/' + user.uid).update({
+                pushId: ids.userId
+              }).then(() => {
+                resolve();
+              }, (error) => {
+                reject(error);
+              })
+            }, (error) => {
+              reject(error);
+            })
+          }
+          else resolve();
         }
-      }
+      })
     })
   }
 

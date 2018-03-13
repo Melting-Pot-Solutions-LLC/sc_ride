@@ -66,15 +66,17 @@ export class UserPage {
       return this.showAlert('Please choose type!')
     }
 
-    this.authService.updateUserProfile(this.user);
-
-    this.nav.setRoot(HomePage);
-    let toast = this.toastCtrl.create({
-      message: 'Your profile has been updated',
-      duration: 3000,
-      position: 'middle'
-    });
-    toast.present();
+    this.authService.updateUserProfile(this.user).then(() => {
+      this.nav.setRoot(HomePage);
+      let toast = this.toastCtrl.create({
+        message: 'Your profile has been updated',
+        duration: 3000,
+        position: 'middle'
+      });
+      toast.present();
+    }, (error) => {
+      console.log(error);
+    })
   }
 
   // choose file for upload

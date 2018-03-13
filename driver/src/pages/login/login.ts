@@ -58,9 +58,15 @@ export class LoginPage {
 
   // login with facebook
   loginWithFacebook() {
+    let loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+    loading.present();
     this.authService.loginWithFacebook().subscribe(authData => {
+      loading.dismiss();
       this.nav.setRoot(HomePage);
     }, error => {
+      loading.dismiss();
       // in case of login error
       let alert = this.alertCtrl.create({
         message: error.message,

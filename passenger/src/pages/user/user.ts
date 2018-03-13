@@ -29,14 +29,17 @@ export class UserPage {
 
   // save user info
   save() {
-    this.authService.updateUserProfile(this.user);
-    this.nav.pop();
-    let toast = this.toastCtrl.create({
-      message: 'Your profile has been updated',
-      duration: 3000,
-      position: 'middle'
-    });
-    toast.present();
+    this.authService.updateUserProfile(this.user).then(() => {
+      this.nav.pop();
+      let toast = this.toastCtrl.create({
+        message: 'Your profile has been updated',
+        duration: 3000,
+        position: 'middle'
+      });
+      toast.present();
+    }, (error) => {
+      console.log(error);
+    })
   }
 
   // choose file for upload
