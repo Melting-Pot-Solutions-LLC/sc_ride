@@ -70,6 +70,8 @@ export class AuthService {
             observer.error(error);
           }          
         })
+      }, (error) => {
+        observer.error(error);
       })
     })
   }
@@ -208,5 +210,10 @@ export class AuthService {
   getCardSetting() {
     const user = this.getUserData();
     return this.db.object('passengers/' + user.uid + '/card');
+  }
+
+  // reset password
+  resetPassword(email) {
+    return this.afAuth.auth.sendPasswordResetEmail(email);
   }
 }

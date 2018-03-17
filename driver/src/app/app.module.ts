@@ -36,6 +36,7 @@ import { ChatService } from '../services/chat-service';
 import { HomePage } from '../pages/home/home';
 import { JobHistoryPage } from '../pages/job-history/job-history';
 import { LoginPage } from '../pages/login/login';
+import { ResetPasswordPage } from '../pages/reset-password/reset-password';
 import { ModalJobPage } from '../pages/modal-job/modal-job';
 import { DropOffPage } from '../pages/drop-off/drop-off';
 import { PickUpPage } from '../pages/pick-up/pick-up';
@@ -65,6 +66,7 @@ export const firebaseConfig = {
     HomePage,
     JobHistoryPage,
     LoginPage,
+    ResetPasswordPage,
     ModalJobPage,
     DropOffPage,
     PickUpPage,
@@ -93,6 +95,7 @@ export const firebaseConfig = {
     HomePage,
     JobHistoryPage,
     LoginPage,
+    ResetPasswordPage,
     ModalJobPage,
     DropOffPage,
     PickUpPage,

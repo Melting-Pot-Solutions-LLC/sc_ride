@@ -70,6 +70,8 @@ export class AuthService {
             observer.error(error);
           }          
         })
+      }, (error) => {
+        observer.error(error);
       })
     })
   }
@@ -204,5 +206,10 @@ export class AuthService {
         }
       })
     })
+  }
+
+  // reset password
+  resetPassword(email) {
+    return this.afAuth.auth.sendPasswordResetEmail(email);
   }
 }

@@ -54,12 +54,12 @@ export class MyApp {
       count: 0,
       component: HomePage
     },
-    {
-      title: 'Wallet',
-      icon: 'ios-albums',
-      count: 0,
-      component: WalletPage
-    },
+    // {
+    //   title: 'Wallet',
+    //   icon: 'ios-albums',
+    //   count: 0,
+    //   component: WalletPage
+    // },
     {
       title: 'Job history',
       icon: 'md-time',

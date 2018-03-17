@@ -4,10 +4,12 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { PlacesPage } from '../places/places';
 import { PaymentMethodPage } from '../payment-method/payment-method';
 import { FindingPage } from "../finding/finding";
+import { CardSettingPage } from "../card-setting/card-setting";
 import { PlaceService } from "../../services/place-service";
 import { SettingService } from "../../services/setting-service";
 import { DriverService } from "../../services/driver-service";
 import { TripService } from "../../services/trip-service";
+import { AuthService } from "../../services/auth-service";
 import { SHOW_VEHICLES_WITHIN, POSITION_INTERVAL, VEHICLE_LAST_ACTIVE_LIMIT } from "../../services/constants";
 declare var google: any;
 
@@ -64,7 +66,7 @@ export class HomePage {
   locality: any;
 
   // payment method
-  paymentMethod: string = 'cash';
+  paymentMethod: string = 'card';
 
   // active drivers list
   activeDrivers: Array<any> = [];
@@ -78,7 +80,8 @@ export class HomePage {
   constructor(public nav: NavController, public platform: Platform, public alertCtrl: AlertController,
               public placeService: PlaceService, private geolocation: Geolocation, private chRef: ChangeDetectorRef,
               public loadingCtrl: LoadingController, public settingService: SettingService,
-              public tripService: TripService, public driverService: DriverService) {
+              public tripService: TripService, public driverService: DriverService,
+              public authService: AuthService) {
     this.origin = tripService.getOrigin();
     this.destination = tripService.getDestination();
   }
@@ -254,8 +257,13 @@ export class HomePage {
     this.tripService.setNote(this.note);
     // this.tripService.setPaymentMethod('');
 
-    // go to finding page
-    this.nav.setRoot(FindingPage);
+    // go to finding page if card settings are ok
+    this.authService.getCardSetting().take(1).subscribe(snapshot => {
+      if (snapshot.$value === null)
+        this.nav.push(CardSettingPage, {page: FindingPage})
+      else
+        this.nav.setRoot(FindingPage);
+    })
   }
 
   // choose origin place

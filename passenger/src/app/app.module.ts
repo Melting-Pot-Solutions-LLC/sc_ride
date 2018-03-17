@@ -36,6 +36,7 @@ import { DriverPage } from '../pages/driver/driver';
 import { FindingPage } from '../pages/finding/finding';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
+import { ResetPasswordPage } from '../pages/reset-password/reset-password';
 import { ModalRatingPage } from '../pages/modal-rating/modal-rating';
 import { NotificationPage } from '../pages/notification/notification';
 import { PaymentMethodPage } from '../pages/payment-method/payment-method';
@@ -70,6 +71,7 @@ export const firebaseConfig = {
     FindingPage,
     HomePage,
     LoginPage,
+    ResetPasswordPage,
     ModalRatingPage,
     NotificationPage,
     PaymentMethodPage,
@@ -103,6 +105,7 @@ export const firebaseConfig = {
     FindingPage,
     HomePage,
     LoginPage,
+    ResetPasswordPage,
     ModalRatingPage,
     NotificationPage,
     PaymentMethodPage,

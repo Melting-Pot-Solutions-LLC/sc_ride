@@ -18,9 +18,12 @@ export class CardSettingPage {
   number: any;
   exp: any;
   cvv: any;
+  withText: boolean;
 
   constructor(public nav: NavController, public authService: AuthService, public toastCtrl: ToastController,
               public alertCtrl: AlertController, public loadingCtrl: LoadingController, public navParams: NavParams) {
+    if (navParams.get('page'))
+      this.withText = true;
     authService.getCardSetting().take(1).subscribe(snapshot => {
       this.number = snapshot.number;
       this.exp = snapshot.exp;
@@ -48,6 +51,8 @@ export class CardSettingPage {
         // if nav from payment method selection
         if (this.navParams.get('back')) {
           this.nav.pop();
+        } else if (this.navParams.get('page')) {
+          this.nav.setRoot(this.navParams.get('page'));
         } else {
           this.nav.setRoot(HomePage);
         }

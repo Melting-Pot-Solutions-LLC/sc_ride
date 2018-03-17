@@ -13,7 +13,7 @@ export class TripService {
   private distance: number;
   private fee: number;
   private note: string;
-  private paymentMethod: any = 'cash';
+  private paymentMethod: any = 'card';
   private vehicle: any;
   // vehicle's icon
   private icon: any;

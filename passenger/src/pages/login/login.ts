@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController, LoadingController } from 'ionic-angular';
 import { RegisterPage } from '../register/register';
-import { HomePage } from '../home/home'
+import { ResetPasswordPage } from '../reset-password/reset-password';
+import { HomePage } from '../home/home';
 import { AuthService } from "../../services/auth-service";
 
 /*
@@ -67,11 +68,13 @@ export class LoginPage {
     }, error => {
       loading.dismiss();
       // in case of login error
-      let alert = this.alertCtrl.create({
-        message: error.message,
-        buttons: ['OK']
-      });
-      alert.present();
+      if (error && error.message) {
+        let alert = this.alertCtrl.create({
+          message: error.message,
+          buttons: ['OK']
+        });
+        alert.present();
+      }
     });
   }
 
@@ -87,5 +90,10 @@ export class LoginPage {
       });
       alert.present();
     });
+  }
+
+  // forgot password
+  forgotPassword() {
+    this.nav.setRoot(ResetPasswordPage);
   }
 }
