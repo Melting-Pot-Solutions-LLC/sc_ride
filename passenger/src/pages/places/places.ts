@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController, LoadingController, NavParams } from 'ionic-angular';
+import { NavController, LoadingController, NavParams, AlertController } from 'ionic-angular';
 import { PlaceService } from '../../services/place-service';
 import { Geolocation } from '@ionic-native/geolocation';
 import { HomePage } from "../home/home";
 import { MapPage } from "../map/map";
 import { TripService } from "../../services/trip-service";
+import { GET_CURRENT_POSITIONS_OPTIONS } from "../../services/constants";
 
 /*
  Generated class for the PlacesPage page.
@@ -33,19 +34,32 @@ export class PlacesPage {
   // page loaded flag
   pageLoaded = false;
 
-  constructor(public nav: NavController, public placeService: PlaceService, public geolocation: Geolocation,
-              public loadingCtrl: LoadingController, public navParams: NavParams, public tripService: TripService) {
+  constructor(
+    public nav: NavController,
+    public placeService: PlaceService,
+    public geolocation: Geolocation,
+    public loadingCtrl: LoadingController,
+    public navParams: NavParams,
+    public tripService: TripService,
+    public alertCtrl: AlertController
+  ) {
     this.loading = this.loadingCtrl.create({
       content: 'Please wait...'
     });
 
-    this.geolocation.getCurrentPosition().then((resp) => {
+    this.geolocation.getCurrentPosition(GET_CURRENT_POSITIONS_OPTIONS).then((resp) => {
       this.lat = resp.coords.latitude;
       this.lon = resp.coords.longitude;
       this.search();
     }).catch((error) => {
-      console.log('Error getting location', error);
-    });
+      if (error && error.message) {
+        let alert = this.alertCtrl.create({
+          message: error.message,
+          buttons: ['OK']
+        });
+        alert.present();
+      }
+    })
   }
 
   // show search input

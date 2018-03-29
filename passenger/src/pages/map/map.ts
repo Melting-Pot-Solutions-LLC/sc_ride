@@ -1,9 +1,10 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 import { PlaceService } from "../../services/place-service";
 import { HomePage } from "../home/home";
 import { TripService } from "../../services/trip-service";
+import { GET_CURRENT_POSITIONS_OPTIONS } from "../../services/constants";
 declare var google: any;
 /*
  Generated class for the LoginPage page.
@@ -25,8 +26,15 @@ export class MapPage {
   markerFromTop = 0;
   markerFromLeft = 0;
 
-  constructor(public nav: NavController, private geolocation: Geolocation, public chRef: ChangeDetectorRef,
-              public navParams: NavParams, public placeService: PlaceService, public tripService: TripService) {
+  constructor(
+    public nav: NavController,
+    private geolocation: Geolocation,
+    public chRef: ChangeDetectorRef,
+    public navParams: NavParams,
+    public placeService: PlaceService,
+    public tripService: TripService,
+    public alertCtrl: AlertController
+  ) {
   }
 
   // Load map only after view is initialized
@@ -41,7 +49,7 @@ export class MapPage {
 
   loadMap() {
     // set current location as map center
-    this.geolocation.getCurrentPosition().then((resp) => {
+    this.geolocation.getCurrentPosition(GET_CURRENT_POSITIONS_OPTIONS).then((resp) => {
       let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
 
       this.map = new google.maps.Map(document.getElementById('map'), {
@@ -60,8 +68,14 @@ export class MapPage {
         this.findPlace(center);
       })
     }).catch((error) => {
-      console.log('Error getting location', error);
-    });
+      if (error && error.message) {
+        let alert = this.alertCtrl.create({
+          message: error.message,
+          buttons: ['OK']
+        });
+        alert.present();
+      }
+    })
   }
 
   // find address by LatLng

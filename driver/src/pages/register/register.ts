@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, LoadingController, AlertController } from 'ionic-angular';
 import { LoginPage } from '../login/login';
+import { ResetPasswordPage } from '../reset-password/reset-password';
 import { HomePage } from "../home/home";
 import { AuthService } from "../../services/auth-service";
 
@@ -52,5 +53,10 @@ export class RegisterPage {
 
   login() {
     this.nav.setRoot(LoginPage);
+  }
+
+  // forgot password
+  forgotPassword() {
+    this.nav.setRoot(ResetPasswordPage);
   }
 }

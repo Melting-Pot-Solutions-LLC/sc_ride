@@ -10,6 +10,11 @@ export let TRIP_STATUS_GOING = 'going';
 export let TRIP_STATUS_FINISHED = 'finished';
 
 export let DEFAULT_AVATAR = 'https://freeiconshop.com/wp-content/uploads/edd/person-outline-filled.png';
+
+export let GET_CURRENT_POSITIONS_OPTIONS = {
+	timeout: 10000,
+	enableHighAccuracy: true
+};
 /*
  trip status: waiting, going, finished
 

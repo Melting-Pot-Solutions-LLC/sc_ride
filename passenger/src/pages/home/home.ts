@@ -10,7 +10,7 @@ import { SettingService } from "../../services/setting-service";
 import { DriverService } from "../../services/driver-service";
 import { TripService } from "../../services/trip-service";
 import { AuthService } from "../../services/auth-service";
-import { SHOW_VEHICLES_WITHIN, POSITION_INTERVAL, VEHICLE_LAST_ACTIVE_LIMIT } from "../../services/constants";
+import { SHOW_VEHICLES_WITHIN, POSITION_INTERVAL, VEHICLE_LAST_ACTIVE_LIMIT, GET_CURRENT_POSITIONS_OPTIONS } from "../../services/constants";
 declare var google: any;
 
 /*
@@ -124,7 +124,7 @@ export class HomePage {
     this.showLoading();
 
     // get current location
-    return this.geolocation.getCurrentPosition().then((resp) => {
+    return this.geolocation.getCurrentPosition(GET_CURRENT_POSITIONS_OPTIONS).then((resp) => {
       let latLng;
 
       if (this.origin) {
@@ -185,6 +185,8 @@ export class HomePage {
                 for (let i = 0; i < this.vehicles.length; i++) {
                   this.vehicles[i].fee = this.distance * 0.62137 * this.vehicles[i].price / 1000;
                   this.vehicles[i].fee = this.vehicles[i].fee.toFixed(2);
+                  // to avoid 'Amount must be at least 50 cents' error
+                  this.vehicles[i].fee = (this.vehicles[i].fee < 0.5) ? 0.5 : this.vehicles[i].fee;
                 }
               });
             }
@@ -211,8 +213,15 @@ export class HomePage {
       this.hideLoading();
 
     }).catch((error) => {
-      console.log('Error getting location', error);
-    });
+      this.hideLoading();
+      if (error && error.message) {
+        let alert = this.alertCtrl.create({
+          message: error.message,
+          buttons: ['OK']
+        });
+        alert.present();
+      }
+    })
   }
 
   // Show note popup when click to 'Notes to user'
@@ -323,7 +332,7 @@ export class HomePage {
     clearInterval(this.driverTracking);
 
     this.driverTracking = setInterval(() => {
-      // this.showDriverOnMap(this.locality);
+      this.showDriverOnMap(this.locality);
     }, POSITION_INTERVAL);
 
     console.log(POSITION_INTERVAL);

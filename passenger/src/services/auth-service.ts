@@ -104,9 +104,7 @@ export class AuthService {
     return Observable.create(observer => {
       this.afAuth.auth.createUserWithEmailAndPassword(email, password).then((authData: any) => {
         authData.name = name;
-
-        // update passenger object
-        this.updateUserProfile(authData).then(() => {
+        this.createUserIfNotExist(authData).then(() => {
           observer.next();
         }, (error) => {
           observer.error(error);
@@ -119,46 +117,38 @@ export class AuthService {
     });
   }
 
-  // update user display name and photo
+  // update user profile data
   updateUserProfile(user) {
-    return new Promise((resolve, reject) => {
-      let name = user.name ? user.name : user.email;
-      let photoUrl = user.photoURL ? user.photoURL : DEFAULT_AVATAR;
+    let name = user.name ? user.name : user.email;
+    let photoUrl = user.photoURL ? user.photoURL : DEFAULT_AVATAR;
+    return this.getUserData().updateProfile({
+      displayName: name,
+      photoURL: photoUrl
+    }).then(() => this.updateUserData(user, name, photoUrl));
+  }
 
-      this.getUserData().updateProfile({
-        displayName: name,
-        photoURL: photoUrl
-      }).then(() => {
-        if (this.platform.is('cordova'))
-          this.oneSignal.getIds().then((ids) => {
-            this.db.object('passengers/' + user.uid).update({
-              name: name,
-              photoURL: photoUrl,
-              email: user.email,
-              phoneNumber: user.phoneNumber ? user.phoneNumber : '',
-              pushId: ids.userId
-            }).then(() => {
-              resolve();
-            }, (error) => {
-              reject(error);
-            })
-          }, (error) => {
-            reject(error);
-          })
-        else
-          this.db.object('passengers/' + user.uid).update({
-            name: name,
-            photoURL: photoUrl,
-            email: user.email,
-            phoneNumber: user.phoneNumber ? user.phoneNumber : ''
-          }).then(() => {
-            resolve();
-          }, (error) => {
-            reject(error);
-          })
-      }, (error) => {
-        reject(error);
-      })
+  // update data for passenger
+  updateUserData(passenger, name, photoUrl) {
+    return this.db.object('passengers/' + passenger.uid).update({
+      name: name,
+      photoURL: photoUrl,
+      email: passenger.email,
+      phoneNumber: passenger.phoneNumber ? passenger.phoneNumber : ''
+    })
+  }
+
+  // update pushId for passenger
+  updateUserPushId(passengerId) {
+    return new Promise((resolve, reject) => {
+      if (this.platform.is('cordova')) {
+        this.oneSignal.getIds()
+          .then(ids => this.db.object('passengers/' + passengerId).update({
+            pushId: ids.userId
+          }))
+          .then(() => resolve())
+          .catch(error => reject(error));
+      }
+      else resolve();
     })
   }
 
@@ -167,30 +157,17 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       // check if user does not exist
       this.getUser(user.uid).take(1).subscribe(snapshot => {
+        // if user does not exist
         if (snapshot.$value === null)
-          // update passenger object
-          this.updateUserProfile(user).then(() => {
-            resolve();
-          }, (error) => {
-            reject(error);
-          })
-        else {
-          if (this.platform.is('cordova')) {
-            // update push id
-            this.oneSignal.getIds().then((ids) => {
-              this.db.object('passengers/' + user.uid).update({
-                pushId: ids.userId
-              }).then(() => {
-                resolve();
-              }, (error) => {
-                reject(error);
-              })
-            }, (error) => {
-              reject(error);
-            })
-          }
-          else resolve();
-        }
+          this.updateUserProfile(user)
+            .then(() => this.updateUserPushId(user.uid))
+            .then(() => resolve())
+            .catch(error => reject(error));
+        // if user exists
+        else 
+          this.updateUserPushId(user.uid)
+            .then(() => resolve())
+            .catch(error => reject(error));
       })
     })
   }
@@ -198,7 +175,7 @@ export class AuthService {
   // update card setting
   updateCardSetting(number, exp, cvv, token) {
     const user = this.getUserData();
-    this.db.object('passengers/' + user.uid + '/card').set({
+    return this.db.object('passengers/' + user.uid + '/card').set({
       number: number,
       exp: exp,
       cvv: cvv,

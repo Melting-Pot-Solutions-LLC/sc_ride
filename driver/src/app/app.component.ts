@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Platform, AlertController } from 'ionic-angular';
 import { ViewChild } from '@angular/core';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -11,7 +11,7 @@ declare var google: any;
 import { AngularFireAuth } from 'angularfire2/auth/auth';
 
 // constant
-import { POSITION_INTERVAL, TRIP_STATUS_WAITING, TRIP_STATUS_GOING } from '../services/constants';
+import { POSITION_INTERVAL, TRIP_STATUS_WAITING, TRIP_STATUS_GOING, GET_CURRENT_POSITIONS_OPTIONS } from '../services/constants';
 
 // import service
 import { AuthService } from '../services/auth-service';
@@ -97,7 +97,8 @@ export class MyApp {
     public authService: AuthService, 
     tripService: TripService,
     public chatService: ChatService,
-    private oneSignal: OneSignal
+    private oneSignal: OneSignal,
+    public alertCtrl: AlertController
   ) {
 
     platform.ready().then(() => {
@@ -146,7 +147,7 @@ export class MyApp {
           });
 
           this.getUnreadMessagesSubscription = this.chatService.getUnreadMessages().subscribe(snapshot => {
-            this.pages[3].count = snapshot;
+            this.pages[2].count = snapshot;
           })
         } else {
           this.driver = null;
@@ -154,7 +155,7 @@ export class MyApp {
       });
 
       // get current location
-      geolocation.getCurrentPosition().then((resp) => {
+      geolocation.getCurrentPosition(GET_CURRENT_POSITIONS_OPTIONS).then((resp) => {
         let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
         let geocoder = new google.maps.Geocoder();
 
@@ -172,17 +173,23 @@ export class MyApp {
                 return;
               }
 
-              geolocation.getCurrentPosition().then((resp) => {
+              geolocation.getCurrentPosition(GET_CURRENT_POSITIONS_OPTIONS).then((resp) => {
                 driverService.updatePosition(this.driver.$key, this.driver.type, locality, resp.coords.latitude,
                     resp.coords.longitude, this.driver.rating, this.driver.name);
-              }, err => {
-                console.log(err);
+              }).catch((error) => {
+                console.log(error);
               });
             }, POSITION_INTERVAL);
           }
         });
-      }, err => {
-        console.log(err);
+      }).catch((error) => {
+        if (error && error.message) {
+          let alert = this.alertCtrl.create({
+            message: error.message,
+            buttons: ['OK']
+          });
+          alert.present();
+        }
       });
 
       // push notifications

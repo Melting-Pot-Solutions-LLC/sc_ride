@@ -15,10 +15,10 @@
 
     <ion-grid>
       <ion-row>
-        <ion-col>
+<!--         <ion-col>
           <span ion-text color="gray">Referral Code</span>
           <h4 ion-text color="light">{{ (driver)?.refCode }}</h4>
-        </ion-col>
+        </ion-col> -->
         <ion-col>
           <span ion-text color="gray">Rating</span>
           <h4 *ngIf="(driver)?.rating">
@@ -30,7 +30,7 @@
     </ion-grid>
 
     <button ion-button block padding color="gray">
-      ${{ (driver)?.balance }}
+      ${{ (driver)?.balance | number:'.0-2' }}
     </button>
   </div>
 </ion-content>

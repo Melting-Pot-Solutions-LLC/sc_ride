@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { ViewController, NavParams } from 'ionic-angular';
+import { ViewController, NavParams, AlertController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
-import { DEAL_TIMEOUT } from "../../services/constants";
+import { DEAL_TIMEOUT, GET_CURRENT_POSITIONS_OPTIONS } from "../../services/constants";
 import { PlaceService } from "../../services/place-service";
 
 /*
@@ -21,12 +21,17 @@ export class ModalJobPage {
   // remaining time for countdown
   public remainingTime = DEAL_TIMEOUT;
 
-  constructor(public viewCtrl: ViewController, public navParams: NavParams, public placeService: PlaceService,
-              public geolocation: Geolocation) {
+  constructor(
+    public viewCtrl: ViewController,
+    public navParams: NavParams,
+    public placeService: PlaceService,
+    public geolocation: Geolocation,
+    public alertCtrl: AlertController
+  ) {
     this.job = navParams.get('deal');
 
     // get current location
-    geolocation.getCurrentPosition().then((resp) => {
+    geolocation.getCurrentPosition(GET_CURRENT_POSITIONS_OPTIONS).then((resp) => {
       //resp.coords.longitude
       this.job.origin.distance = this.placeService.calcCrow(
           resp.coords.latitude,
@@ -38,8 +43,14 @@ export class ModalJobPage {
           resp.coords.longitude,
           this.job.destination.location.lat,
           this.job.destination.location.lng).toFixed(0);
-    }, err => {
-      console.log(err);
+    }).catch((error) => {
+      if (error && error.message) {
+        let alert = this.alertCtrl.create({
+          message: error.message,
+          buttons: ['OK']
+        });
+        alert.present();
+      }
     });
 
     // start count down

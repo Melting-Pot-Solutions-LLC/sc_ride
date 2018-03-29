@@ -21,29 +21,29 @@
     <ion-row>
       <ion-col text-center>
         <span class="label">Today</span>
-        <h4>{{ stats.today }}</h4>
+        <h4>{{ stats.today | number:'.0-2' }}</h4>
       </ion-col>
       <ion-col text-center>
         <span class="label">Yesterday</span>
-        <h4>{{ stats.yesterday }}</h4>
+        <h4>{{ stats.yesterday | number:'.0-2' }}</h4>
       </ion-col>
       <ion-col text-center>
         <span class="label">This Month</span>
-        <h4>{{ stats.thisMonth }}</h4>
+        <h4>{{ stats.thisMonth | number:'.0-2' }}</h4>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col text-center>
         <span class="label">Last Month</span>
-        <h4>{{ stats.lastMonth }}</h4>
+        <h4>{{ stats.lastMonth | number:'.0-2' }}</h4>
       </ion-col>
       <ion-col text-center>
         <span class="label">This Year</span>
-        <h4>{{ stats.thisYear }}</h4>
+        <h4>{{ stats.thisYear | number:'.0-2' }}</h4>
       </ion-col>
       <ion-col text-center>
         <span class="label">Last Year</span>
-        <h4>{{ stats.lastYear }}</h4>
+        <h4>{{ stats.lastYear | number:'.0-2' }}</h4>
       </ion-col>
     </ion-row>
   </ion-grid>

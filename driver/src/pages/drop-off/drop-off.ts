@@ -26,7 +26,7 @@ export class DropOffPage {
   // show payment popup
   showPayment() {
     let prompt = this.alertCtrl.create({
-      title: 'Total (cash):',
+      title: 'Total:',
       message: '<h1>' + this.trip.currency + this.trip.fee + '</h1>',
       buttons: [
         {

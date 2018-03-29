@@ -105,9 +105,7 @@ export class AuthService {
     return Observable.create(observer => {
       this.afAuth.auth.createUserWithEmailAndPassword(email, password).then((authData: any) => {
         authData.name = name;
-
-        // update driver object
-        this.updateUserProfile(authData).then(() => {
+        this.createUserIfNotExist(authData).then(() => {
           observer.next();
         }, (error) => {
           observer.error(error);
@@ -120,58 +118,50 @@ export class AuthService {
     });
   }
 
-  // update user display name and photo
+  // update user profile data
   updateUserProfile(user) {
-    return new Promise((resolve, reject) => {
-      let name = user.name ? user.name : user.email;
-      let photoUrl = user.photoURL ? user.photoURL : DEFAULT_AVATAR;
+    let name = user.name ? user.name : user.email;
+    let photoUrl = user.photoURL ? user.photoURL : DEFAULT_AVATAR;
+    return this.getUserData().updateProfile({
+      displayName: name,
+      photoURL: photoUrl
+    }).then(() => this.updateUserData(user, name, photoUrl));
+  }
 
-      this.getUserData().updateProfile({
-        displayName: name,
-        photoURL: photoUrl
-      }).then(() => {
-        if (this.platform.is('cordova'))
-          this.oneSignal.getIds().then((ids) => {
-            this.db.object('drivers/' + user.uid).update({
-              name: name,
-              photoURL: photoUrl,
-              email: user.email,
-              phoneNumber: user.phoneNumber ? user.phoneNumber : '',
-              plate: user.plate ? user.plate : '',
-              brand: user.brand ? user.brand : '',
-              type: user.type ? user.type : '',
-              pushId: ids.userId,
-              balance: 10,
-              rating: 4,
-              refCode: user.uid.substring(1, 4)
-            }).then(() => {
-              resolve();
-            }, (error) => {
-              reject(error);
-            })
-          }, (error) => {
-            reject(error);
-          })
-        else
-          this.db.object('drivers/' + user.uid).update({
-            name: name,
-            photoURL: photoUrl,
-            email: user.email,
-            phoneNumber: user.phoneNumber ? user.phoneNumber : '',
-            plate: user.plate ? user.plate : '',
-            brand: user.brand ? user.brand : '',
-            type: user.type ? user.type : '',
-            balance: 10,
-            rating: 4,
-            refCode: user.uid.substring(1, 4)
-          }).then(() => {
-            resolve();
-          }, (error) => {
-            reject(error);
-          })
-      }, (error) => {
-        reject(error);
-      })
+  // setup init data for driver
+  setupUserData(driverId) {
+    return this.db.object('drivers/' + driverId).update({
+      balance: 10,
+      rating: 4,
+      refCode: driverId.substring(1, 4)
+    })
+  }
+
+  // update data for driver
+  updateUserData(driver, name, photoUrl) {
+    return this.db.object('drivers/' + driver.uid).update({
+      name: name,
+      photoURL: photoUrl,
+      email: driver.email,
+      phoneNumber: driver.phoneNumber ? driver.phoneNumber : '',
+      plate: driver.plate ? driver.plate : '',
+      brand: driver.brand ? driver.brand : '',
+      type: driver.type ? driver.type : ''
+    })
+  }
+
+  // update pushId for driver
+  updateUserPushId(driverId) {
+    return new Promise((resolve, reject) => {
+      if (this.platform.is('cordova')) {
+        this.oneSignal.getIds()
+          .then(ids => this.db.object('drivers/' + driverId).update({
+            pushId: ids.userId
+          }))
+          .then(() => resolve())
+          .catch(error => reject(error));
+      }
+      else resolve();
     })
   }
 
@@ -180,30 +170,18 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       // check if user does not exist
       this.getUser(user.uid).take(1).subscribe(snapshot => {
+        // if user does not exist
         if (snapshot.$value === null)
-          // update passenger object
-          this.updateUserProfile(user).then(() => {
-            resolve();
-          }, (error) => {
-            reject(error);
-          })
-        else {
-          if (this.platform.is('cordova')) {
-            // update push id
-            this.oneSignal.getIds().then((ids) => {
-              this.db.object('drivers/' + user.uid).update({
-                pushId: ids.userId
-              }).then(() => {
-                resolve();
-              }, (error) => {
-                reject(error);
-              })
-            }, (error) => {
-              reject(error);
-            })
-          }
-          else resolve();
-        }
+          this.updateUserProfile(user)
+            .then(() => this.setupUserData(user.uid))
+            .then(() => this.updateUserPushId(user.uid))
+            .then(() => resolve())
+            .catch(error => reject(error));
+        // if user exists
+        else 
+          this.updateUserPushId(user.uid)
+            .then(() => resolve())
+            .catch(error => reject(error));
       })
     })
   }
