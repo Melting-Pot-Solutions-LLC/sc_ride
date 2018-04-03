@@ -68,7 +68,7 @@ export class MapPage {
         this.findPlace(center);
       })
     }).catch((error) => {
-      if (error && error.message) {
+      if (error && error.message && error.code) {
         let alert = this.alertCtrl.create({
           message: error.message,
           buttons: ['OK']

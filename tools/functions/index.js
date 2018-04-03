@@ -159,7 +159,9 @@ exports.makeReport = functions.database.ref('/trips/{tripId}').onWrite(function 
       // update driver balance
       admin.database().ref('drivers/' + original.driverId + '/balance').once('value').then(function (snapshot) {
         var snapshotVal = snapshot.val() ? parseFloat(snapshot.val()) : 0;
-        admin.database().ref('drivers/' + original.driverId + '/balance').set(parseFloat(snapshotVal) + fee);
+        // - 30 cents - 2.9% - 20%
+        var driverFee = (fee - 0.3) * 0.8 / 1.029;
+        admin.database().ref('drivers/' + original.driverId + '/balance').set(parseFloat(snapshotVal) + driverFee);
       });
 
       // format currency

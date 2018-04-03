@@ -184,9 +184,11 @@ export class HomePage {
 
                 for (let i = 0; i < this.vehicles.length; i++) {
                   this.vehicles[i].fee = this.distance * 0.62137 * this.vehicles[i].price / 1000;
-                  this.vehicles[i].fee = this.vehicles[i].fee.toFixed(2);
+                  // + 2.9% + 30 cents
+                  this.vehicles[i].fee = this.vehicles[i].fee + this.vehicles[i].fee * 0.029 + 0.3;
                   // to avoid 'Amount must be at least 50 cents' error
                   this.vehicles[i].fee = (this.vehicles[i].fee < 0.5) ? 0.5 : this.vehicles[i].fee;
+                  this.vehicles[i].fee = this.vehicles[i].fee.toFixed(2);
                 }
               });
             }
@@ -214,7 +216,7 @@ export class HomePage {
 
     }).catch((error) => {
       this.hideLoading();
-      if (error && error.message) {
+      if (error && error.message && error.code) {
         let alert = this.alertCtrl.create({
           message: error.message,
           buttons: ['OK']

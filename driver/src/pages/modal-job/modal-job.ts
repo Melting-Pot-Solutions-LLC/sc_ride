@@ -44,7 +44,7 @@ export class ModalJobPage {
           this.job.destination.location.lat,
           this.job.destination.location.lng).toFixed(0);
     }).catch((error) => {
-      if (error && error.message) {
+      if (error && error.message && error.code) {
         let alert = this.alertCtrl.create({
           message: error.message,
           buttons: ['OK']
