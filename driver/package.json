@@ -26,6 +26,7 @@
         "@ionic-native/facebook": "^4.5.2",
         "@ionic-native/geolocation": "^4.1.0",
         "@ionic-native/keyboard": "^4.5.2",
+        "@ionic-native/launch-navigator": "^4.6.0",
         "@ionic-native/onesignal": "^4.5.2",
         "@ionic-native/splash-screen": "4.3.3",
         "@ionic-native/status-bar": "4.3.3",
@@ -35,10 +36,12 @@
         "autoprefixer": "^7.1.6",
         "cordova-android": "^6.2.3",
         "cordova-ios": "^4.4.0",
+        "cordova-plugin-actionsheet": "^2.3.3",
         "cordova-plugin-camera": "^2.4.1",
         "cordova-plugin-compat": "^1.2.0",
         "cordova-plugin-console": "^1.0.5",
         "cordova-plugin-device": "^1.1.4",
+        "cordova-plugin-dialogs": "^2.0.1",
         "cordova-plugin-facebook4": "^1.9.1",
         "cordova-plugin-geolocation": "^2.4.3",
         "cordova-plugin-splashscreen": "^4.0.3",
@@ -51,6 +54,7 @@
         "promise-polyfill": "6.0.2",
         "rxjs": "5.5.2",
         "sw-toolbox": "3.6.0",
+        "uk.co.workingedge.phonegap.plugin.launchnavigator": "^4.2.0",
         "zone.js": "0.8.18"
     },
     "devDependencies": {
@@ -81,7 +85,10 @@
                 "APP_NAME": "sc_ride"
             },
             "cordova-plugin-camera": {},
-            "onesignal-cordova-plugin": {}
+            "onesignal-cordova-plugin": {},
+            "uk.co.workingedge.phonegap.plugin.launchnavigator": {
+                "LOCATION_USAGE_DESCRIPTION": "This app requires access to your location for navigation purposes"
+            }
         },
         "platforms": [
             "android",

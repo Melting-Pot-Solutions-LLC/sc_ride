@@ -75,9 +75,9 @@ export class PlacesPage {
   // choose a place
   selectPlace(place) {
     if (this.navParams.get('type') == 'origin') {
-      this.tripService.setOrigin(place.vicinity, place.geometry.location.lat, place.geometry.location.lng);
+      this.tripService.setOrigin(place.name, place.geometry.location.lat, place.geometry.location.lng);
     } else {
-      this.tripService.setDestination(place.vicinity, place.geometry.location.lat, place.geometry.location.lng);
+      this.tripService.setDestination(place.name, place.geometry.location.lat, place.geometry.location.lng);
     }
 
     this.nav.setRoot(HomePage);

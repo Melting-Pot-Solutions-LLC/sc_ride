@@ -54,6 +54,10 @@ import { ChatHistoryPage } from '../pages/chat-history/chat-history';
 import { ChatPage } from '../pages/chat/chat';
 // end import pages
 
+// import directives
+import { CardMaskDirective } from '../directives/card-mask';
+// end import directives
+
 // AF2 Settings
 export const firebaseConfig = {
   apiKey: "AIzaSyDKo4A60BeWXnVTdfEku2kef4dTJ0nB13g",
@@ -86,7 +90,8 @@ export const firebaseConfig = {
     UserPage,
     CardSettingPage,
     ChatHistoryPage,
-    ChatPage
+    ChatPage,
+    CardMaskDirective
   ],
   imports: [
     BrowserModule,
