@@ -1,0 +1,16 @@
+page-admin-panel {
+	.scroll-content {
+
+		> p {
+			margin: 10px;
+		}
+
+		ion-list {
+			margin: 0px !important;
+
+			.item, ion-item-options {
+				border: none !important;
+			}
+		}
+	}
+}

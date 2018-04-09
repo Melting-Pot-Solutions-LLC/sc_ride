@@ -133,7 +133,8 @@ export class AuthService {
     return this.db.object('drivers/' + driverId).update({
       balance: 10,
       rating: 4,
-      refCode: driverId.substring(1, 4)
+      refCode: driverId.substring(1, 4),
+      status: 'Unauthorized'
     })
   }
 

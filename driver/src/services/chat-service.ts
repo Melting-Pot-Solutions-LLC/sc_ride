@@ -4,7 +4,7 @@ import { AuthService } from './auth-service';
 import { TripService } from './trip-service';
 
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/combineLatest';
+import 'rxjs/add/observable/zip';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/reduce';
 import 'rxjs/add/observable/of';
@@ -108,8 +108,8 @@ export class ChatService {
         }
       })
     }).mergeMap(historyData => {
-      if (historyData.length) return Observable.combineLatest(
-        historyData.map(historyItem => {
+      if (historyData.length) return Observable.zip(
+        ...historyData.map(historyItem => {
           return this.tripService.getPassenger(historyItem.passengerId).map(passenger => {
             historyItem.name = passenger.name;
             historyItem.photo = passenger.photoURL;

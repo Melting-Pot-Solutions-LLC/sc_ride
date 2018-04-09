@@ -15,10 +15,10 @@
 
     <ion-grid>
       <ion-row>
-<!--         <ion-col>
-          <span ion-text color="gray">Referral Code</span>
-          <h4 ion-text color="light">{{ (driver)?.refCode }}</h4>
-        </ion-col> -->
+        <ion-col>
+          <span ion-text color="gray">Status</span>
+          <h4 ion-text color="light">{{ (driver)?.status }}</h4>
+        </ion-col>
         <ion-col>
           <span ion-text color="gray">Rating</span>
           <h4 *ngIf="(driver)?.rating">

@@ -18,6 +18,7 @@ import { UserPage } from '../pages/user/user';
 import { CardSettingPage } from '../pages/card-setting/card-setting';
 import { ChatHistoryPage } from '../pages/chat-history/chat-history';
 import { ChatPage } from '../pages/chat/chat';
+import { AdminPanelPage } from '../pages/admin-panel/admin-panel';
 // end import pages
 
 @Component({
@@ -30,14 +31,23 @@ import { ChatPage } from '../pages/chat/chat';
 export class MyApp {
   rootPage: any;
   nav: any;
-  user = {};
+  user: any = {};
   getUnreadMessagesSubscription: any;
+  checkPassengerStatusSubscription: any;
+  isAdmin: boolean = false;
   pages = [
     {
       title: 'Home',
       icon: 'ios-home-outline',
       count: 0,
       component: HomePage
+    },
+    {
+      title: 'Admin panel',
+      icon: 'ios-people-outline',
+      count: 0,
+      component: AdminPanelPage,
+      adminPage: true
     },
     {
       title: 'History',
@@ -101,7 +111,10 @@ export class MyApp {
       // get user data
       afAuth.authState.subscribe(authData => {
         if (authData) {
-          this.user = authService.getUserData();
+          this.user = this.authService.getUserData();
+          this.checkPassengerStatusSubscription = this.authService.checkPassengerStatus(this.user.uid).subscribe(snapshot => {
+            this.isAdmin = snapshot;
+          });
           this.getUnreadMessagesSubscription = this.chatService.getUnreadMessages().subscribe(snapshot => {
             this.pages[2].count = snapshot;
           })
@@ -152,6 +165,7 @@ export class MyApp {
   logout() {
     this.nav.setRoot(LoginPage).then(() => {
       this.getUnreadMessagesSubscription.unsubscribe();
+      this.checkPassengerStatusSubscription.unsubscribe();
       this.authService.logout();
     });
   }

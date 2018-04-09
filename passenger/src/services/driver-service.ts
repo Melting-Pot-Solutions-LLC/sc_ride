@@ -1,5 +1,10 @@
 import { Injectable } from "@angular/core";
 import { AngularFireDatabase } from "angularfire2/database";
+import moment from 'moment';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/zip';
+import 'rxjs/add/operator/mergeMap';
+import { STATUSES } from "./constants";
 
 @Injectable()
 export class DriverService {
@@ -13,13 +18,65 @@ export class DriverService {
     return this.db.object('drivers/' + id);
   }
 
+  // get all drivers
+  getDrivers() {
+    return this.db.list('drivers/');
+  }
+
+  // update driver's status
+  updateDriverStatus(driverId, status) {
+    return this.db.object('drivers/' + driverId).update({
+      status: status
+    })
+  }
+
+  // get driver's statistics
+  getDriverStatistics(driverId) {
+    return this.db.list('trips/', {
+      query: {
+        orderByChild: 'driverId',
+        equalTo: driverId
+      }
+    }).map(trips => {
+      return trips.map(trip => {
+        return {
+          day: (moment(moment().startOf('day')).isBefore(trip.createdAt)) ? 1 : 0,
+          week: (moment(moment().startOf('week')).isBefore(trip.createdAt)) ? 1 : 0,
+          month: (moment(moment().startOf('month')).isBefore(trip.createdAt)) ? 1 : 0
+        }
+      }).reduce((acc, x) => {
+        return {
+          day: acc.day + x.day,
+          week: acc.week + x.week,
+          month: acc.month + x.month
+        }
+      }, {
+        day: 0,
+        week: 0,
+        month: 0
+      })
+    })
+  }
+
   // get driver position
   getDriverPosition(locality, vehicleType, id) {
     return this.db.object('localities/' + locality + '/' + vehicleType + '/' + id);
   }
 
   getActiveDriver(locality, vehicleType) {
-    return this.db.list('localities/' + locality + '/' + vehicleType);
+    return this.db.list('localities/' + locality + '/' + vehicleType).mergeMap(localitiesDrivers => {
+      if (localitiesDrivers.length)
+        return Observable.zip(
+          ...localitiesDrivers.map(localitiesDriver => {
+            return this.getDriver(localitiesDriver.$key).map(driver => {
+              if (driver.status == STATUSES[1])
+                return localitiesDriver;
+              else return null; 
+            })
+          })
+        ).map(activeDrivers => activeDrivers.filter(el => el != null))
+      else return Observable.of([]);
+    })
   }
 
   // calculate vehicle angle

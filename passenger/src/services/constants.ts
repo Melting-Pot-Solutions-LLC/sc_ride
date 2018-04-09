@@ -15,6 +15,12 @@ export let GET_CURRENT_POSITIONS_OPTIONS = {
 	timeout: 10000,
 	enableHighAccuracy: true
 };
+
+export let STATUSES = [
+	'Unauthorized',
+	'Active',
+	'Declined'
+];
 /*
  trip status: waiting, going, finished
 

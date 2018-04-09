@@ -1,0 +1,27 @@
+<ion-content>
+	<h4>Number of trips</h4>
+  <ion-grid class="stats light-bg">
+    <ion-row>
+      <ion-col text-center>
+        <span class="label">Today</span>
+      </ion-col>
+      <ion-col text-center>
+        <span class="label">This Week</span>
+      </ion-col>
+      <ion-col text-center>
+        <span class="label">This Month</span>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col text-center>
+        <h4>{{ stats?.day }}</h4>
+      </ion-col>
+      <ion-col text-center>
+        <h4>{{ stats?.week }}</h4>
+      </ion-col>
+      <ion-col text-center>
+        <h4>{{ stats?.month }}</h4>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

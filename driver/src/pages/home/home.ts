@@ -16,30 +16,35 @@ export class HomePage {
   driver: any;
   deal: any;
   dealSubscription: any;
+  driverSubscription: any;
 
   constructor(public nav: NavController, public driverService: DriverService, public modalCtrl: ModalController,
               public alertCtrl: AlertController, public dealService: DealService, public authService: AuthService) {
 
+    let firstDriverDataLoading = true;
     // get user info from service
-    driverService.getDriver().take(1).subscribe(snapshot => {
+    this.driverSubscription = driverService.getDriver().subscribe(snapshot => {
       this.driver = snapshot;
 
-      // if user did not complete registration, redirect to user setting
-      if (this.driver.plate && this.driver.type) {
-        this.watchDeals();
-      } else {
-        this.nav.setRoot(UserPage, {
-          user: authService.getUserData()
-        });
+      // first data loading
+      if (firstDriverDataLoading) {
+        // if user did not complete registration, redirect to user setting
+        if (this.driver.plate && this.driver.type && !this.dealSubscription)
+          this.watchDeals();
+        else
+          this.nav.setRoot(UserPage, {
+            user: authService.getUserData()
+          });
+        firstDriverDataLoading = false;
       }
-    });
+    })
   }
 
   ionViewWillLeave() {
-    if (this.dealSubscription) {
-      // unsubscribe when leave this page
+    // unsubscribe when leave this page
+    if (this.dealSubscription)
       this.dealSubscription.unsubscribe();
-    }
+    this.driverSubscription.unsubscribe();
   }
 
   // make array with range is n

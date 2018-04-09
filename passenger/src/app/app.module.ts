@@ -52,6 +52,8 @@ import { UserPage } from '../pages/user/user';
 import { CardSettingPage } from '../pages/card-setting/card-setting';
 import { ChatHistoryPage } from '../pages/chat-history/chat-history';
 import { ChatPage } from '../pages/chat/chat';
+import { AdminPanelPage } from '../pages/admin-panel/admin-panel';
+import { DriverStatisticsPage } from '../pages/driver-statistics/driver-statistics';
 // end import pages
 
 // import directives
@@ -91,6 +93,8 @@ export const firebaseConfig = {
     CardSettingPage,
     ChatHistoryPage,
     ChatPage,
+    AdminPanelPage,
+    DriverStatisticsPage,
     CardMaskDirective
   ],
   imports: [
@@ -125,7 +129,9 @@ export const firebaseConfig = {
     UserPage,
     CardSettingPage,
     ChatHistoryPage,
-    ChatPage
+    ChatPage,
+    AdminPanelPage,
+    DriverStatisticsPage
   ],
   providers: [
     StatusBar,

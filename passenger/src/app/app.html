@@ -9,11 +9,13 @@
     </div>
 
     <ion-list class="list-full-border">
-      <button ion-item menuClose *ngFor="let page of pages" (click)="openPage(page)">
-        <ion-icon item-left name="{{ page.icon }}"></ion-icon>
-        {{ page.title }}
-        <ion-badge color="danger" item-right *ngIf="page.count">{{ page.count }}</ion-badge>
-      </button>
+      <div *ngFor="let page of pages">
+        <button ion-item menuClose *ngIf="(page.adminPage && isAdmin) || !page.adminPage" (click)="openPage(page)">
+          <ion-icon item-left name="{{ page.icon }}"></ion-icon>
+          {{ page.title }}
+          <ion-badge color="danger" item-right *ngIf="page.count">{{ page.count }}</ion-badge>
+        </button>
+      </div>
       <button ion-item menuClose (click)="logout()">
         <ion-icon item-left name="ios-exit-outline"></ion-icon>
         Logout

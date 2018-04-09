@@ -5,7 +5,8 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase/app';
-import 'rxjs/add/operator/take'
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/mergeMap';
 import { DEFAULT_AVATAR } from "./constants";
 import { Facebook } from '@ionic-native/facebook';
 import { OneSignal } from '@ionic-native/onesignal';
@@ -192,5 +193,22 @@ export class AuthService {
   // reset password
   resetPassword(email) {
     return this.afAuth.auth.sendPasswordResetEmail(email);
+  }
+
+  // check if current user is admin
+  checkPassengerStatus(passengerId) {
+    return this.db.list('admins').map(admins => {
+      return admins.map(admin => {
+        return admin.$value;
+      })
+    }).mergeMap(adminEmails => {
+      if (adminEmails.length)
+        return this.getUser(passengerId).map(passenger => {
+          if ((passenger.$value !== null) && passenger.email && (adminEmails.indexOf(passenger.email) != -1))
+            return true
+          else return false;
+        })
+      else return Observable.of(false);
+    })
   }
 }
