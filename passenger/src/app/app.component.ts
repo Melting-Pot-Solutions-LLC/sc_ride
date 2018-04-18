@@ -116,7 +116,7 @@ export class MyApp {
             this.isAdmin = snapshot;
           });
           this.getUnreadMessagesSubscription = this.chatService.getUnreadMessages().subscribe(snapshot => {
-            this.pages[2].count = snapshot;
+            this.pages[3].count = snapshot;
           })
         }
       })
