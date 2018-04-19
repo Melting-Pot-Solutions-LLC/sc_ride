@@ -20,7 +20,7 @@ import { DriverService } from '../services/driver-service';
 
 // import page
 import { HomePage } from '../pages/home/home';
-import { WalletPage } from '../pages/wallet/wallet';
+// import { WalletPage } from '../pages/wallet/wallet';
 import { JobHistoryPage } from '../pages/job-history/job-history';
 import { SettingPage } from '../pages/setting/setting';
 import { SupportPage } from '../pages/support/support';

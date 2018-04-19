@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, AlertController } from 'ionic-angular';
 import { DriverPage } from '../driver/driver';
 import { TripService } from "../../services/trip-service";
 import { DealService } from "../../services/deal-service";
 import { HomePage } from "../home/home";
-import { DEAL_STATUS_PENDING, DEAL_STATUS_ACCEPTED } from "../../services/constants";
+import { DEAL_STATUS_PENDING, DEAL_STATUS_ACCEPTED, DEAL_TIMEOUT } from "../../services/constants";
 
 /*
  Generated class for the FindingPage page.
@@ -18,21 +18,24 @@ import { DEAL_STATUS_PENDING, DEAL_STATUS_ACCEPTED } from "../../services/consta
 })
 export class FindingPage {
   drivers: any;
+  removeDealTimeout: any;
+  selectedIndex: number;
 
-  constructor(public nav: NavController, public tripService: TripService, public dealService: DealService) {
+  constructor(
+  	public nav: NavController,
+  	public tripService: TripService,
+  	public dealService: DealService,
+  	public alertCtrl: AlertController
+  ) {
     // get list available drivers
     this.drivers = this.tripService.getAvailableDrivers();
     // sort by driver distance and rating
     this.drivers = this.dealService.sortDriversList(this.drivers);
-
-    if (this.drivers) {
-      // make deal to first user
-      this.makeDeal(0);
-    }
   }
 
   // make deal to driver
   makeDeal(index) {
+  	this.selectedIndex = index;
     let driver = this.drivers[index];
     let dealAccepted = false;
 
@@ -53,14 +56,30 @@ export class FindingPage {
               this.tripService.getNote(),
               this.tripService.getPaymentMethod(),
           ).then(() => {
+            // timeout to remove a deal 
+            this.removeDealTimeout = setTimeout(() => {
+              if (!dealAccepted) {
+                sub.unsubscribe();
+                // remove record
+                this.dealService.removeDeal(driver.$key);
+                // make deal to other user
+                this.nextDriver(index);
+                this.showOkAlert('Your trip request has not been accepted by ' + driver.name);
+              }
+            }, DEAL_TIMEOUT + 3000);
+
             let sub = this.dealService.getDriverDeal(driver.$key).subscribe(snap => {
               // if record doesn't exist or is accepted
               if (snap.$value === null || snap.status != DEAL_STATUS_PENDING) {
                 sub.unsubscribe();
 
+	            	// clear timeout
+	            	clearTimeout(this.removeDealTimeout);
+
                 // if deal has been cancelled
                 if (snap.$value === null) {
                   this.nextDriver(index);
+                  this.showOkAlert('Your trip request has not been accepted by ' + driver.name);
                 } else if (snap.status == DEAL_STATUS_ACCEPTED) {
                   // if deal is accepted
                   console.log('accepted', snap.tripId);
@@ -71,20 +90,7 @@ export class FindingPage {
                   this.nav.setRoot(DriverPage);
                 }
               }
-            });
-
-            // if timeout
-            /*
-            setTimeout(() => {
-              if (!dealAccepted) {
-                sub.unsubscribe();
-                // remove record
-                this.dealService.removeDeal(driver.$key);
-                // make deal to other user
-                this.nextDriver(index);
-              }
-            }, DEAL_TIMEOUT);
-            */
+            })
           });
         } else {
           this.nextDriver(index);
@@ -99,10 +105,18 @@ export class FindingPage {
   // make deal to next driver
   nextDriver(index) {
     this.drivers.splice(index, 1);
-    this.makeDeal(index);
+    this.selectedIndex = null;
   }
 
   goBack() {
     this.nav.setRoot(HomePage);
+  }
+
+  showOkAlert(text) {
+    let alert = this.alertCtrl.create({
+      message: text,
+      buttons: ['OK']
+    });
+    alert.present();
   }
 }

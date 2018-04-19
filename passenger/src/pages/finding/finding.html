@@ -23,11 +23,11 @@
   </h2>
 
   <ion-list class="list-no-border list-drivers" padding>
-    <ion-item *ngFor="let driver of drivers; let i = index">
+    <ion-item *ngFor="let driver of drivers; let i = index" (click)="makeDeal(i)">
       <span>{{ driver.name }}</span>
 
-      <img src="assets/img/loading.gif" alt="" [hidden]="i" item-end>
-      <span item-end [hidden]="!i">
+      <img src="assets/img/loading.gif" alt="" [hidden]="selectedIndex != i" item-end>
+      <span item-end [hidden]="selectedIndex == i">
         Waiting
       </span>
     </ion-item>

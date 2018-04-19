@@ -3,7 +3,7 @@ import { NavController, ModalController, AlertController } from 'ionic-angular';
 import { DriverService } from '../../services/driver-service';
 import { ModalJobPage } from '../modal-job/modal-job';
 import { PickUpPage } from "../pick-up/pick-up";
-import { DEAL_STATUS_PENDING, DEAL_TIMEOUT } from "../../services/constants";
+import { DEAL_STATUS_PENDING } from "../../services/constants";
 import { DealService } from "../../services/deal-service";
 import { UserPage } from "../user/user";
 import { AuthService } from "../../services/auth-service";
@@ -30,7 +30,9 @@ export class HomePage {
       if (firstDriverDataLoading) {
         // if user did not complete registration, redirect to user setting
         if (this.driver.plate && this.driver.type && !this.dealSubscription)
-          this.watchDeals();
+          this.dealService.removePendingDeal(this.driver.$key)
+        		.then(() => this.watchDeals())
+        		.catch(error => console.log(error));
         else
           this.nav.setRoot(UserPage, {
             user: authService.getUserData()
@@ -84,11 +86,6 @@ export class HomePage {
     this.dealSubscription = this.dealService.getDeal(this.driver.$key).subscribe(snapshot => {
       this.deal = snapshot;
       if (snapshot.status == DEAL_STATUS_PENDING) {
-        // if deal expired
-        if (snapshot.createdAt < (Date.now() - DEAL_TIMEOUT * 1000)) {
-          return this.dealService.removeDeal(this.driver.$key);
-        }
-
         // show modal
         let modal = this.modalCtrl.create(ModalJobPage, {
           deal: snapshot
