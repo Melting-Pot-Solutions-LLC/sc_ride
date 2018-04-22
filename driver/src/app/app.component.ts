@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { Platform, AlertController } from 'ionic-angular';
+import { Platform, AlertController, ToastController } from 'ionic-angular';
 import { ViewChild } from '@angular/core';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Geolocation } from '@ionic-native/geolocation';
 import { OneSignal } from '@ionic-native/onesignal';
+import { Network } from '@ionic-native/network';
+
 declare var google: any;
 
 // angularfire2
@@ -98,7 +100,9 @@ export class MyApp {
     tripService: TripService,
     public chatService: ChatService,
     private oneSignal: OneSignal,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    private network: Network,
+    private toastCtrl: ToastController
   ) {
 
     platform.ready().then(() => {
@@ -106,6 +110,28 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
+
+      // check network connection
+      let connectedToInternet = true;
+      if (this.network.type === 'none') {
+      	connectedToInternet = false;
+			  this.showToast('Network was disconnected!');
+      };
+	    this.network.onDisconnect().subscribe(() => {
+	    	if (connectedToInternet) {
+		      connectedToInternet = false;
+				  this.showToast('Network was disconnected!');
+	    	}
+	    });
+	    this.network.onConnect().subscribe(() => {
+	      if (!connectedToInternet) {
+	      	connectedToInternet = true;
+	      	let toast = this.showToast('Network connected. Reloading data.');
+				  toast.onDidDismiss(() => {
+				    window.location.reload();
+				  })
+	      }
+	    });
 
       // check for login stage, then redirect
       afAuth.authState.take(1).subscribe(authData => {
@@ -246,6 +272,19 @@ export class MyApp {
       this.getUnreadMessagesSubscription.unsubscribe();
       this.authService.logout();
     });
+  }
+
+  /**
+   * Show toast
+   */
+  showToast(text) {
+	  let toast = this.toastCtrl.create({
+	    message: text,
+	    duration: 3000,
+	    position: 'middle'
+	  });
+	  toast.present();
+	  return toast;
   }
 }
 

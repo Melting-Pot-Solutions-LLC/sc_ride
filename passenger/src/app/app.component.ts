@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Platform, ToastController } from 'ionic-angular';
 import { ViewChild } from '@angular/core';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { OneSignal } from '@ionic-native/onesignal';
+import { Network } from '@ionic-native/network';
 
 // import pages
 import { LoginPage } from '../pages/login/login';
@@ -88,7 +89,9 @@ export class MyApp {
     public afAuth: AngularFireAuth,
     public authService: AuthService,
     public chatService: ChatService,
-    private oneSignal: OneSignal
+    private oneSignal: OneSignal,
+    private network: Network,
+    private toastCtrl: ToastController
   ) {
 
     platform.ready().then(() => {
@@ -96,6 +99,28 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
+
+      // check network connection
+      let connectedToInternet = true;
+      if (this.network.type === 'none') {
+      	connectedToInternet = false;
+			  this.showToast('Network was disconnected!');
+      };
+	    this.network.onDisconnect().subscribe(() => {
+	    	if (connectedToInternet) {
+		      connectedToInternet = false;
+				  this.showToast('Network was disconnected!');
+	    	}
+	    });
+	    this.network.onConnect().subscribe(() => {
+	      if (!connectedToInternet) {
+	      	connectedToInternet = true;
+	      	let toast = this.showToast('Network connected. Reloading data.');
+				  toast.onDidDismiss(() => {
+				    window.location.reload();
+				  })
+	      }
+	    });
 
       // check for login stage, then redirect
       afAuth.authState.take(1).subscribe(authData => {
@@ -168,5 +193,16 @@ export class MyApp {
       this.checkPassengerStatusSubscription.unsubscribe();
       this.authService.logout();
     });
+  }
+
+  // show toast
+  showToast(text) {
+	  let toast = this.toastCtrl.create({
+	    message: text,
+	    duration: 3000,
+	    position: 'middle'
+	  });
+	  toast.present();
+	  return toast;
   }
 }
