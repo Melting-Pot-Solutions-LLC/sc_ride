@@ -141,7 +141,9 @@ export class MyApp {
             this.isAdmin = snapshot;
           });
           this.getUnreadMessagesSubscription = this.chatService.getUnreadMessages().subscribe(snapshot => {
-            this.pages[3].count = snapshot;
+          	let chatMenuElement = this.pages.find(element => element.component == ChatHistoryPage);
+          	if (chatMenuElement)
+          		chatMenuElement.count = snapshot;
           })
         }
       })
